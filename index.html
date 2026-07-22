@@ -97,7 +97,7 @@ footer{color:#718178}
           <div class="camera-strip" id="cameraStrip"></div>
           <div class="room-video-wrap">
             <div class="room-video-header"><strong id="roomVideoTitle">Selected room · Main Entrance</strong><span class="muted">Click a room or camera</span></div>
-            <div class="room-video"><span>LIVE</span><video id="roomVideo" muted autoplay loop playsinline preload="auto"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="roomVideoCamera">CAM-001 · Main Entrance</strong></div>
+            <div class="room-video"><span>LIVE</span><video id="roomVideo" muted autoplay loop playsinline preload="metadata" poster="cam-main-entrance.jpg"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="roomVideoCamera">CAM-001 · Main Entrance</strong></div>
           </div>
         </section>
 
@@ -115,7 +115,7 @@ footer{color:#718178}
               <div><span>Zone</span><strong id="selectedZone"></strong></div>
               <div><span>Status</span><strong id="selectedStatus"></strong></div>
             </div>
-            <div class="video-placeholder"><span>LIVE</span><video id="incidentVideo" muted autoplay loop playsinline preload="auto"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="selectedCamera">No camera assigned</strong></div>
+            <div class="video-placeholder"><span>LIVE</span><video id="incidentVideo" muted autoplay loop playsinline preload="metadata" poster="cam-main-entrance.jpg"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="selectedCamera">No camera assigned</strong></div>
             <div class="sop"><strong>Standard operating procedure</strong><ol id="sopList"></ol></div>
           </div>
         </section>
@@ -218,7 +218,7 @@ const zones = [
  {id:5,name:'Office window',x:74,y:28,camera:'CAM-002'}, {id:6,name:'Parking panic',x:67,y:76,camera:'CAM-003'},
  ...Array.from({length:18},(_,i)=>({id:i+7,name:`Expansion zone ${i+7}`,x:10,y:10,camera:null}))
 ];
-const cameras=[{id:'CAM-001',name:'Main Entrance',video:'cam-main-entrance.mp4'},{id:'CAM-002',name:'Sales Floor / Office',video:'cam-sales-floor.mp4'},{id:'CAM-003',name:'Storage / Parking',video:'cam-storage-parking.mp4'},{id:'CAM-004',name:'Server Room',video:'cam-server-room.mp4'}];
+const cameras=[{id:'CAM-001',name:'Main Entrance',video:'cam-main-entrance.mp4',poster:'cam-main-entrance.jpg'},{id:'CAM-002',name:'Sales Floor / Office',video:'cam-sales-floor.mp4',poster:'cam-sales-floor.jpg'},{id:'CAM-003',name:'Storage / Parking',video:'cam-storage-parking.mp4',poster:'cam-storage-parking.jpg'},{id:'CAM-004',name:'Server Room',video:'cam-server-room.mp4',poster:'cam-server-room.jpg'}];
 let events=[], selected=null;
 const $=s=>document.querySelector(s);
 const panel=new PanelSimulator(handleRawEvent);
@@ -226,7 +226,7 @@ const panel=new PanelSimulator(handleRawEvent);
 function init(){
  $('#zones').innerHTML=zones.map(z=>`<button class="zone" data-zone="${z.id}" title="${z.name}">Z${String(z.id).padStart(2,'0')}</button>`).join('');
  $('#mapMarkers').innerHTML=zones.slice(0,6).map(z=>`<div id="marker-${z.id}" class="marker" style="left:${z.x}%;top:${z.y}%">${z.id}</div>`).join('');
- $('#cameraStrip').innerHTML=cameras.map(c=>`<div class="camera-tile" data-camera="${c.id}"><div class="camera-thumb"></div><span>${c.id} · ${c.name}</span></div>`).join('');
+ $('#cameraStrip').innerHTML=cameras.map(c=>`<div class="camera-tile" data-camera="${c.id}"><div class="camera-thumb" style="background-image:url('${c.poster}');background-size:cover;background-position:center"></div><span>${c.id} · ${c.name}</span></div>`).join('');
  bind(); tick(); setInterval(tick,1000); render();
 }
 function bind(){
@@ -248,7 +248,7 @@ function showVideoFallback(video,camera){
 
 function selectCamera(cameraId, roomName){
  const camera=cameras.find(c=>c.id===cameraId); if(!camera)return;
- const video=$('#roomVideo'); video.pause(); video.src='./'+camera.video; video.load(); const promise=video.play(); if(promise) promise.catch(()=>showVideoFallback(video,camera));
+ const video=$('#roomVideo'); video.pause(); video.poster='./'+camera.poster; video.src='./'+camera.video; video.load(); const promise=video.play(); if(promise) promise.catch(()=>showVideoFallback(video,camera));
  $('#roomVideoTitle').textContent=`Selected room · ${roomName||camera.name}`;
  $('#roomVideoCamera').textContent=`${camera.id} · ${camera.name}`;
  document.querySelectorAll('[data-camera]').forEach(el=>el.classList.toggle('selected-camera',el.dataset.camera===cameraId));
@@ -256,7 +256,7 @@ function selectCamera(cameraId, roomName){
 function setIncidentVideo(cameraId){
  const camera=cameras.find(c=>c.id===cameraId); const video=$('#incidentVideo');
  if(!camera){video.removeAttribute('src');video.load();return;}
- video.pause();video.src='./'+camera.video;video.load();const promise=video.play();if(promise)promise.catch(()=>showVideoFallback(video,camera));
+ video.pause();video.poster='./'+camera.poster;video.src='./'+camera.video;video.load();const promise=video.play();if(promise)promise.catch(()=>showVideoFallback(video,camera));
 }
 function tick(){ $('#clock').textContent=new Date().toLocaleString(); }
 function handleRawEvent(raw){
