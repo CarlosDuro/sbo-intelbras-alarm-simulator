@@ -1,19 +1,19 @@
-# SBO Intelbras Alarm Simulator — Upload Ready
+# SBO Intelbras Alarm Integration Simulator
 
-Esta versión está preparada para subirla desde la interfaz web de GitHub sin carpetas.
+Demo estática de integración entre un panel Intelbras AMT 2008 RF y una consola estilo SBO.
 
-## Archivos
+## Versión integrada con video
 
-- `index.html`: contiene HTML, CSS y JavaScript en un solo archivo.
-- `.nojekyll`: evita procesamiento innecesario de GitHub Pages.
-- `LICENSE`: licencia del demo.
+- 24 zonas simuladas.
+- Eventos Contact ID simulados.
+- Dashboard de alarmas y SOP.
+- Plano interactivo.
+- Video local asociado a cada cuarto/cámara.
+- Al seleccionar un cuarto, cámara o alarma, el video correspondiente se reproduce dentro del HTML.
+- Los cuatro MP4 están incluidos en la raíz para facilitar la carga desde GitHub Web sin carpetas.
 
 ## Publicación
 
-1. En el repositorio, abre **Add file → Upload files**.
-2. Selecciona `index.html`, `.nojekyll`, `README.md` y `LICENSE`.
-3. Confirma con **Commit changes**.
-4. Ve a **Settings → Pages**.
-5. Selecciona **Deploy from a branch**, rama `main` y carpeta `/ (root)`.
+Sube todos los archivos a la raíz del repositorio y habilita GitHub Pages desde `main` y `/ (root)`.
 
-> Demo tecnológico: los mensajes Contact ID y la integración SBO son simulados.
+> Demostración tecnológica. No establece comunicación directa con un panel físico Intelbras.
