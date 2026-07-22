@@ -3,22 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Intelbras AMT 2008 RF to SBO integration simulator" />
-  <title>SBO · Intelbras Alarm Integration Simulator</title>
+  <meta name="description" content="Intelbras-inspired AMT alarm management console" />
+  <title>AMT Security · Alarm Management Console</title>
   <style>
 :root{--bg:#0b1018;--panel:#121a25;--panel2:#182231;--line:#263449;--text:#e7edf6;--muted:#8fa0b8;--accent:#2e9cff;--danger:#ff4d5a;--warn:#ffb545;--ok:#25c77b;--critical:#d72e42}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1018,#0d1420);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}.topbar{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);background:#0e151f;position:sticky;top:0;z-index:10}.brand{display:flex;gap:12px;align-items:center}.brand-mark{font-weight:900;letter-spacing:.08em;background:var(--accent);color:white;padding:10px 12px;border-radius:8px}.brand span{display:block;font-size:12px;color:var(--muted);margin-top:3px}.top-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.online{background:var(--ok);box-shadow:0 0 10px var(--ok)}#clock{margin-left:18px}.layout{display:grid;grid-template-columns:330px 1fr;gap:16px;padding:16px;min-height:calc(100vh - 100px)}.card{background:rgba(18,26,37,.96);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.18)}.panel{padding:16px;height:max-content;position:sticky;top:84px}.section-title{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:14px}.section-subtitle{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 9px}.badge{font-size:11px;background:#243247;color:#b8c8dc;padding:5px 8px;border-radius:999px}.panel-display{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#07100b;border:1px solid #1e4331;border-radius:8px;padding:12px;color:#75f0ad;font-family:Consolas,monospace}.panel-display small{display:block;color:#4ca574;font-size:9px}.panel-display strong{font-size:12px}.button-row,.event-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}button{border:1px solid #34465f;background:#1a2738;color:#dce7f5;border-radius:7px;padding:9px 10px;cursor:pointer;font-weight:600}button:hover{background:#22344a}button.primary{background:var(--accent);border-color:var(--accent);color:#fff}button.small{padding:6px 9px;font-size:11px}.zones{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.zone{padding:9px 4px;text-align:center;font-size:11px}.zone.alarm{background:var(--danger);border-color:var(--danger);animation:pulse 1s infinite}.zone.bypassed{opacity:.45}.event-buttons{grid-template-columns:repeat(2,1fr)}.health-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}.health-grid div,.detail-grid div{background:var(--panel2);padding:10px;border-radius:7px}.health-grid span,.detail-grid span{display:block;color:var(--muted);font-size:11px}.health-grid strong,.detail-grid strong{font-size:12px}.workspace{min-width:0}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px}.stat span{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:28px;margin-top:6px}.two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}.two-col.lower{grid-template-columns:1fr 1fr}.map-card,.event-card,.lower .card{padding:14px}.muted{font-size:11px;color:var(--muted);font-weight:400}.floorplan{height:330px;position:relative;display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:1fr 1fr;background:#0d151f;border:1px solid #2b3b50;border-radius:8px;overflow:hidden}.room{border:1px solid #34465a;display:flex;align-items:center;justify-content:center;color:#8fa0b8;font-size:12px;cursor:pointer;transition:.2s}.room:hover,.room.selected-room{background:#17304a;color:#fff;border-color:#2e9cff;box-shadow:inset 0 0 0 1px #2e9cff}.lobby{grid-row:1/3}.sales{grid-column:2/4}.marker{position:absolute;width:24px;height:24px;border-radius:50%;background:#287fc3;border:3px solid #cceaff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;transform:translate(-50%,-50%)}.marker.alarm{background:var(--danger);box-shadow:0 0 0 8px rgba(255,77,90,.18);animation:pulse 1s infinite}.camera-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.camera-tile{background:#0b1118;border:1px solid #2b3b50;border-radius:7px;overflow:hidden;cursor:pointer;transition:.2s}.camera-tile:hover,.camera-tile.selected-camera{border-color:#2e9cff;transform:translateY(-1px)}.camera-thumb{height:54px;background:linear-gradient(135deg,#1c2a37,#09121c);position:relative}.camera-thumb:after{content:"";position:absolute;inset:12px 24px;border:2px solid #425a70}.camera-tile span{display:block;padding:6px;font-size:10px;color:var(--muted)}.empty-state{height:450px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center}.hidden{display:none!important}.incident-heading{display:flex;justify-content:space-between;gap:10px}.incident-heading small{color:var(--muted)}.incident-heading h2{font-size:20px;margin:4px 0}.incident-heading p{color:var(--muted);margin:0 0 12px}.incident-actions{display:flex;gap:6px}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.video-placeholder{height:210px;background:#070b10;margin-top:10px;border-radius:8px;position:relative;overflow:hidden}.video-placeholder video,.room-video video{width:100%;height:100%;object-fit:cover;background:#05080c}.video-placeholder>span,.room-video>span{position:absolute;top:8px;left:8px;background:var(--danger);padding:3px 6px;border-radius:3px;font-size:9px;z-index:2}.video-placeholder>strong,.room-video>strong{position:absolute;bottom:8px;left:10px;font-size:11px;background:rgba(0,0,0,.65);padding:4px 7px;border-radius:4px}.camera-scene{position:absolute;inset:0;background:linear-gradient(15deg,#101722,#263442);opacity:.8}.room-video-wrap{margin-top:12px}.room-video-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.room-video{height:250px;background:#070b10;border:1px solid #2b3b50;border-radius:8px;position:relative;overflow:hidden}.camera-scene:before,.camera-scene:after{content:"";position:absolute;border:2px solid #50657c}.camera-scene:before{width:95px;height:70px;left:15%;top:25%}.camera-scene:after{width:130px;height:50px;right:10%;bottom:15%}.sop{margin-top:10px;background:#101a27;padding:10px;border-radius:8px}.sop ol{margin:7px 0 0;padding-left:20px;color:#b9c7d8;font-size:12px;line-height:1.7}.neutral{background:#263449}.severity-critical{background:var(--critical)}.severity-high{background:#b85c1e}.severity-medium{background:#806b13}.severity-info{background:#24577a}.console-tabs{display:flex;gap:6px;margin-bottom:8px}.tab.active{background:#2a425d}.console{height:310px;overflow:auto;margin:0;background:#080d13;border:1px solid #243247;border-radius:8px;padding:12px;color:#9ed0ff;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap}.scenario-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.timeline{height:240px;overflow:auto;border-top:1px solid var(--line)}.timeline-item{display:grid;grid-template-columns:72px 1fr auto;gap:8px;padding:9px 0;border-bottom:1px solid #202c3c;font-size:11px}.timeline-item span:first-child{color:var(--muted)}.timeline-item strong{font-weight:600}.timeline-item em{font-style:normal;color:var(--muted)}.empty-line{color:var(--muted);padding:24px;text-align:center}footer{text-align:center;color:#61738a;font-size:11px;padding:8px 0 18px}@keyframes pulse{50%{filter:brightness(1.35)}}@media(max-width:1100px){.layout{grid-template-columns:1fr}.panel{position:static}.two-col,.two-col.lower{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.layout{padding:8px}.topbar{padding:0 10px}.top-status span:not(#clock){display:none}.stats-grid{grid-template-columns:repeat(2,1fr)}.zones{grid-template-columns:repeat(6,1fr)}.camera-strip{grid-template-columns:repeat(2,1fr)}}
+
+
+/* Intelbras-inspired visual system */
+:root{--bg:#eef3f0;--panel:#ffffff;--panel2:#f4f7f5;--line:#d8e2dc;--text:#1e2924;--muted:#6e7d75;--accent:#00a859;--danger:#dc3545;--warn:#f0a500;--ok:#00a859;--critical:#b92235}
+body{background:linear-gradient(180deg,#f7faf8,#eaf1ed);color:var(--text)}
+.topbar{background:#ffffff;border-bottom:3px solid var(--accent);box-shadow:0 2px 12px rgba(20,70,45,.08)}
+.brand-mark{background:var(--accent);border-radius:4px;font-size:15px}.brand span{color:#6d7d74}.top-status{color:#53665c}
+.card{background:#fff;border-color:#dce5df;box-shadow:0 8px 24px rgba(35,75,55,.08)}
+.panel-display{background:#e9f6ef;border-color:#a5d9bd;color:#087b44}.panel-display small{color:#5e8b72}
+button{background:#fff;color:#26372e;border-color:#cddbd3}button:hover{background:#edf8f2;border-color:#79c69e}button.primary{background:var(--accent);border-color:var(--accent)}
+.badge{background:#e5f5ec;color:#087b44}.section-subtitle{color:#6e7d75}.health-grid div,.detail-grid div{background:#f3f7f5}
+.floorplan{background:#f8faf9;border-color:#cedbd4}.room{border-color:#c7d7ce;color:#617269}.room:hover,.room.selected-room{background:#e2f5ea;color:#087b44;border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.marker{background:#00a859;border-color:#d9f4e6}.camera-tile{background:#fff;border-color:#d4e0d9}.camera-tile:hover,.camera-tile.selected-camera{border-color:var(--accent)}.camera-thumb{background:linear-gradient(135deg,#dce9e2,#a9c9b8)}
+.video-placeholder,.room-video{background:#111b16;border-color:#c8d8cf}.sop{background:#f2f7f4}.sop ol{color:#3c4c43}.console{background:#102019;color:#9ce5bd;border-color:#b9d4c4}.tab.active{background:#dff3e8;color:#087b44}.timeline{border-color:#dbe5df}.timeline-item{border-color:#e3ebe6}
+footer{color:#718178}
 
 </style>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">SBO</div>
-      <div><strong>Security Operations</strong><span>Intelbras AMT 2008 RF Integration Simulator</span></div>
+      <div class="brand-mark">AMT</div>
+      <div><strong>AMT Security</strong><span>Alarm Management Console · SBO Integration</span></div>
     </div>
     <div class="top-status">
-      <span class="dot online"></span><span>Middleware online</span>
+      <span class="dot online"></span><span>System online</span>
       <span id="clock"></span>
     </div>
   </header>
@@ -82,7 +97,7 @@
           <div class="camera-strip" id="cameraStrip"></div>
           <div class="room-video-wrap">
             <div class="room-video-header"><strong id="roomVideoTitle">Selected room · Main Entrance</strong><span class="muted">Click a room or camera</span></div>
-            <div class="room-video"><span>SIMULATED LIVE</span><video id="roomVideo" muted autoplay loop playsinline preload="metadata"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="roomVideoCamera">CAM-001 · Main Entrance</strong></div>
+            <div class="room-video"><span>LIVE</span><video id="roomVideo" muted autoplay loop playsinline preload="auto"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="roomVideoCamera">CAM-001 · Main Entrance</strong></div>
           </div>
         </section>
 
@@ -100,7 +115,7 @@
               <div><span>Zone</span><strong id="selectedZone"></strong></div>
               <div><span>Status</span><strong id="selectedStatus"></strong></div>
             </div>
-            <div class="video-placeholder"><span>SIMULATED LIVE</span><video id="incidentVideo" muted autoplay loop playsinline preload="metadata"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="selectedCamera">No camera assigned</strong></div>
+            <div class="video-placeholder"><span>LIVE</span><video id="incidentVideo" muted autoplay loop playsinline preload="auto"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="selectedCamera">No camera assigned</strong></div>
             <div class="sop"><strong>Standard operating procedure</strong><ol id="sopList"></ol></div>
           </div>
         </section>
@@ -129,7 +144,7 @@
     </section>
   </main>
 
-  <footer>Technology demonstration only · Contact ID messages and SBO endpoints are simulated.</footer>
+  <footer>AMT integration concept · Interface inspired by professional Intelbras security products.</footer>
   <script>
 // contact-id-parser.js
 function buildContactId({account='1234', qualifier='1', code='130', partition='01', zone='001'}) {
@@ -137,7 +152,7 @@ function buildContactId({account='1234', qualifier='1', code='130', partition='0
 }
 function parseContactId(raw) {
   const parts = raw.trim().split(/\s+/);
-  if (parts.length < 5) throw new Error('Invalid simulated Contact ID message');
+  if (parts.length < 5) throw new Error('Invalid Contact ID message');
   return {account:parts[0], messageType:parts[1], qualifier:parts[2][0], eventCode:parts[2].slice(1), partition:parts[3], zone:parts[4]};
 }
 
@@ -161,8 +176,8 @@ function normalizeEvent(parsed, zoneInfo, cameraInfo) {
   return {
     id:`EVT-${ts.toISOString().replace(/[-:.TZ]/g,'').slice(0,14)}-${Math.floor(Math.random()*900+100)}`,
     source:{manufacturer:'Intelbras',model:'AMT 2008 RF',panelId:'AMT-MX-001',account:parsed.account},
-    event:{protocol:'CONTACT_ID_SIMULATED',code:parsed.eventCode,type:catalog.type,description:catalog.title,severity:catalog.severity,qualifier:parsed.qualifier},
-    location:{site:'Demo Branch',partition:parsed.partition,zone:Number(parsed.zone),zoneName:zoneInfo?.name || 'System'},
+    event:{protocol:'CONTACT_ID',code:parsed.eventCode,type:catalog.type,description:catalog.title,severity:catalog.severity,qualifier:parsed.qualifier},
+    location:{site:'Corporate Site 01',partition:parsed.partition,zone:Number(parsed.zone),zoneName:zoneInfo?.name || 'System'},
     relatedResources:{cameras:cameraInfo?[cameraInfo.id]:[],floorplan:'ground-floor'},
     timestamp:ts.toISOString(),status:'new',sop:catalog.sop
   };
@@ -226,9 +241,14 @@ function bind(){
  $('#copyJsonBtn').onclick=async()=>{if(selected){await navigator.clipboard.writeText(JSON.stringify(selected,null,2));$('#copyJsonBtn').textContent='Copied';setTimeout(()=>$('#copyJsonBtn').textContent='Copy JSON',1000)}};
 }
 
+
+function showVideoFallback(video,camera){
+  video.poster='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="100%" height="100%" fill="#17241f"/><text x="50%" y="46%" text-anchor="middle" fill="#fff" font-family="Arial" font-size="24">${camera.id} · ${camera.name}</text><text x="50%" y="56%" text-anchor="middle" fill="#8fb9a7" font-family="Arial" font-size="16">Video unavailable — verify MP4 in repository root</text></svg>`);
+}
+
 function selectCamera(cameraId, roomName){
  const camera=cameras.find(c=>c.id===cameraId); if(!camera)return;
- const video=$('#roomVideo'); video.src=camera.video; video.load(); video.play().catch(()=>{});
+ const video=$('#roomVideo'); video.pause(); video.src='./'+camera.video; video.load(); const promise=video.play(); if(promise) promise.catch(()=>showVideoFallback(video,camera));
  $('#roomVideoTitle').textContent=`Selected room · ${roomName||camera.name}`;
  $('#roomVideoCamera').textContent=`${camera.id} · ${camera.name}`;
  document.querySelectorAll('[data-camera]').forEach(el=>el.classList.toggle('selected-camera',el.dataset.camera===cameraId));
@@ -236,7 +256,7 @@ function selectCamera(cameraId, roomName){
 function setIncidentVideo(cameraId){
  const camera=cameras.find(c=>c.id===cameraId); const video=$('#incidentVideo');
  if(!camera){video.removeAttribute('src');video.load();return;}
- video.src=camera.video;video.load();video.play().catch(()=>{});
+ video.pause();video.src='./'+camera.video;video.load();const promise=video.play();if(promise)promise.catch(()=>showVideoFallback(video,camera));
 }
 function tick(){ $('#clock').textContent=new Date().toLocaleString(); }
 function handleRawEvent(raw){

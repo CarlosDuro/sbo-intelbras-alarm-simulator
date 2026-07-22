@@ -1,19 +1,13 @@
-# SBO Intelbras Alarm Integration Simulator
+# AMT Security — Alarm Management Console
 
-Demo estática de integración entre un panel Intelbras AMT 2008 RF y una consola estilo SBO.
+Interfaz web inspirada en productos profesionales de seguridad Intelbras para demostrar la integración de un panel AMT 2008 RF con SBO.
 
-## Versión integrada con video
+## GitHub Pages
 
-- 24 zonas simuladas.
-- Eventos Contact ID simulados.
-- Dashboard de alarmas y SOP.
-- Plano interactivo.
-- Video local asociado a cada cuarto/cámara.
-- Al seleccionar un cuarto, cámara o alarma, el video correspondiente se reproduce dentro del HTML.
-- Los cuatro MP4 están incluidos en la raíz para facilitar la carga desde GitHub Web sin carpetas.
+1. Descomprime el ZIP.
+2. Sube todos los archivos, incluidos los cuatro `.mp4`, a la raíz del repositorio.
+3. En **Settings → Pages**, selecciona `Deploy from a branch`, rama `main`, carpeta `/ (root)`.
 
-## Publicación
+Los MP4 están codificados en H.264 Baseline, `yuv420p` y `faststart` para funcionar en Chrome, Edge, Safari y GitHub Pages.
 
-Sube todos los archivos a la raíz del repositorio y habilita GitHub Pages desde `main` y `/ (root)`.
-
-> Demostración tecnológica. No establece comunicación directa con un panel físico Intelbras.
+Esta interfaz es un concepto inspirado en productos Intelbras; no es una aplicación oficial del fabricante.
