@@ -1,13 +1,29 @@
-# AMT Security — Alarm Management Console
+# AMT Security Console 2.0 — versión sin carpetas
 
-Interfaz web inspirada en productos profesionales de seguridad Intelbras para demostrar la integración de un panel AMT 2008 RF con SBO.
+Esta edición está preparada para cargarse directamente en la raíz de un repositorio de GitHub Pages.
 
-## GitHub Pages
+## Archivos que deben quedar juntos
 
-1. Descomprime el ZIP.
-2. Sube todos los archivos, incluidos los cuatro `.mp4`, a la raíz del repositorio.
-3. En **Settings → Pages**, selecciona `Deploy from a branch`, rama `main`, carpeta `/ (root)`.
+```text
+index.html
+server-room-poster.svg
+mixkit-security-cam-capturing-a-fire-in-the-server-room-23283-hd-ready.mp4
+README.md
+.nojekyll
+```
 
-Los MP4 están codificados en H.264 Baseline, `yuv420p` y `faststart` para funcionar en Chrome, Edge, Safari y GitHub Pages.
+El CSS y JavaScript ya están integrados dentro de `index.html`; no existen carpetas `assets` ni `videos`.
 
-Esta interfaz es un concepto inspirado en productos Intelbras; no es una aplicación oficial del fabricante.
+## Instalación
+
+1. Extrae el ZIP.
+2. Descarga el clip de Mixkit.
+3. Renómbralo exactamente como:
+
+```text
+mixkit-security-cam-capturing-a-fire-in-the-server-room-23283-hd-ready.mp4
+```
+
+4. Selecciona todos los archivos y súbelos directamente a la raíz del repositorio.
+5. En GitHub Pages publica desde la rama principal y la carpeta `/ (root)`.
+6. Espera la actualización y recarga con `Ctrl + F5`.

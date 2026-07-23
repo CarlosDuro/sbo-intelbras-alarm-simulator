@@ -1,294 +1,158 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Intelbras-inspired AMT alarm management console" />
-  <title>AMT Security · Alarm Management Console</title>
+  <meta name="theme-color" content="#071512" />
+  <title>AMT Security Console 2.0</title>
   <style>
-:root{--bg:#0b1018;--panel:#121a25;--panel2:#182231;--line:#263449;--text:#e7edf6;--muted:#8fa0b8;--accent:#2e9cff;--danger:#ff4d5a;--warn:#ffb545;--ok:#25c77b;--critical:#d72e42}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1018,#0d1420);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}.topbar{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);background:#0e151f;position:sticky;top:0;z-index:10}.brand{display:flex;gap:12px;align-items:center}.brand-mark{font-weight:900;letter-spacing:.08em;background:var(--accent);color:white;padding:10px 12px;border-radius:8px}.brand span{display:block;font-size:12px;color:var(--muted);margin-top:3px}.top-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.online{background:var(--ok);box-shadow:0 0 10px var(--ok)}#clock{margin-left:18px}.layout{display:grid;grid-template-columns:330px 1fr;gap:16px;padding:16px;min-height:calc(100vh - 100px)}.card{background:rgba(18,26,37,.96);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.18)}.panel{padding:16px;height:max-content;position:sticky;top:84px}.section-title{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:14px}.section-subtitle{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 9px}.badge{font-size:11px;background:#243247;color:#b8c8dc;padding:5px 8px;border-radius:999px}.panel-display{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#07100b;border:1px solid #1e4331;border-radius:8px;padding:12px;color:#75f0ad;font-family:Consolas,monospace}.panel-display small{display:block;color:#4ca574;font-size:9px}.panel-display strong{font-size:12px}.button-row,.event-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}button{border:1px solid #34465f;background:#1a2738;color:#dce7f5;border-radius:7px;padding:9px 10px;cursor:pointer;font-weight:600}button:hover{background:#22344a}button.primary{background:var(--accent);border-color:var(--accent);color:#fff}button.small{padding:6px 9px;font-size:11px}.zones{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.zone{padding:9px 4px;text-align:center;font-size:11px}.zone.alarm{background:var(--danger);border-color:var(--danger);animation:pulse 1s infinite}.zone.bypassed{opacity:.45}.event-buttons{grid-template-columns:repeat(2,1fr)}.health-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}.health-grid div,.detail-grid div{background:var(--panel2);padding:10px;border-radius:7px}.health-grid span,.detail-grid span{display:block;color:var(--muted);font-size:11px}.health-grid strong,.detail-grid strong{font-size:12px}.workspace{min-width:0}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px}.stat span{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:28px;margin-top:6px}.two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}.two-col.lower{grid-template-columns:1fr 1fr}.map-card,.event-card,.lower .card{padding:14px}.muted{font-size:11px;color:var(--muted);font-weight:400}.floorplan{height:330px;position:relative;display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:1fr 1fr;background:#0d151f;border:1px solid #2b3b50;border-radius:8px;overflow:hidden}.room{border:1px solid #34465a;display:flex;align-items:center;justify-content:center;color:#8fa0b8;font-size:12px;cursor:pointer;transition:.2s}.room:hover,.room.selected-room{background:#17304a;color:#fff;border-color:#2e9cff;box-shadow:inset 0 0 0 1px #2e9cff}.lobby{grid-row:1/3}.sales{grid-column:2/4}.marker{position:absolute;width:24px;height:24px;border-radius:50%;background:#287fc3;border:3px solid #cceaff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;transform:translate(-50%,-50%)}.marker.alarm{background:var(--danger);box-shadow:0 0 0 8px rgba(255,77,90,.18);animation:pulse 1s infinite}.camera-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.camera-tile{background:#0b1118;border:1px solid #2b3b50;border-radius:7px;overflow:hidden;cursor:pointer;transition:.2s}.camera-tile:hover,.camera-tile.selected-camera{border-color:#2e9cff;transform:translateY(-1px)}.camera-thumb{height:54px;background:linear-gradient(135deg,#1c2a37,#09121c);position:relative}.camera-thumb:after{content:"";position:absolute;inset:12px 24px;border:2px solid #425a70}.camera-tile span{display:block;padding:6px;font-size:10px;color:var(--muted)}.empty-state{height:450px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center}.hidden{display:none!important}.incident-heading{display:flex;justify-content:space-between;gap:10px}.incident-heading small{color:var(--muted)}.incident-heading h2{font-size:20px;margin:4px 0}.incident-heading p{color:var(--muted);margin:0 0 12px}.incident-actions{display:flex;gap:6px}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.video-placeholder{height:210px;background:#070b10;margin-top:10px;border-radius:8px;position:relative;overflow:hidden}.video-placeholder video,.room-video video{width:100%;height:100%;object-fit:cover;background:#05080c}.video-placeholder>span,.room-video>span{position:absolute;top:8px;left:8px;background:var(--danger);padding:3px 6px;border-radius:3px;font-size:9px;z-index:2}.video-placeholder>strong,.room-video>strong{position:absolute;bottom:8px;left:10px;font-size:11px;background:rgba(0,0,0,.65);padding:4px 7px;border-radius:4px}.camera-scene{position:absolute;inset:0;background:linear-gradient(15deg,#101722,#263442);opacity:.8}.room-video-wrap{margin-top:12px}.room-video-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.room-video{height:250px;background:#070b10;border:1px solid #2b3b50;border-radius:8px;position:relative;overflow:hidden}.camera-scene:before,.camera-scene:after{content:"";position:absolute;border:2px solid #50657c}.camera-scene:before{width:95px;height:70px;left:15%;top:25%}.camera-scene:after{width:130px;height:50px;right:10%;bottom:15%}.sop{margin-top:10px;background:#101a27;padding:10px;border-radius:8px}.sop ol{margin:7px 0 0;padding-left:20px;color:#b9c7d8;font-size:12px;line-height:1.7}.neutral{background:#263449}.severity-critical{background:var(--critical)}.severity-high{background:#b85c1e}.severity-medium{background:#806b13}.severity-info{background:#24577a}.console-tabs{display:flex;gap:6px;margin-bottom:8px}.tab.active{background:#2a425d}.console{height:310px;overflow:auto;margin:0;background:#080d13;border:1px solid #243247;border-radius:8px;padding:12px;color:#9ed0ff;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap}.scenario-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.timeline{height:240px;overflow:auto;border-top:1px solid var(--line)}.timeline-item{display:grid;grid-template-columns:72px 1fr auto;gap:8px;padding:9px 0;border-bottom:1px solid #202c3c;font-size:11px}.timeline-item span:first-child{color:var(--muted)}.timeline-item strong{font-weight:600}.timeline-item em{font-style:normal;color:var(--muted)}.empty-line{color:var(--muted);padding:24px;text-align:center}footer{text-align:center;color:#61738a;font-size:11px;padding:8px 0 18px}@keyframes pulse{50%{filter:brightness(1.35)}}@media(max-width:1100px){.layout{grid-template-columns:1fr}.panel{position:static}.two-col,.two-col.lower{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.layout{padding:8px}.topbar{padding:0 10px}.top-status span:not(#clock){display:none}.stats-grid{grid-template-columns:repeat(2,1fr)}.zones{grid-template-columns:repeat(6,1fr)}.camera-strip{grid-template-columns:repeat(2,1fr)}}
+:root{--bg:#06100e;--panel:#0d1b18;--panel2:#11231f;--line:#213a34;--text:#f2f8f6;--muted:#8ea7a0;--green:#26d69b;--green2:#0fb77f;--red:#ff4d5e;--amber:#ffbb45;--shadow:0 18px 50px rgba(0,0,0,.35)}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 75% 0,#153c31 0,transparent 32%),var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}.app-shell{min-height:100vh}.topbar{height:74px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(5,16,14,.88);backdrop-filter:blur(14px);position:sticky;top:0;z-index:20}.brand{display:flex;gap:12px;align-items:center}.brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(145deg,var(--green),#0c7f5c);display:grid;place-items:center;color:#042017;font-weight:900;font-size:23px;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}.brand strong{display:block;font-size:17px}.brand span{display:block;color:var(--muted);font-size:12px;margin-top:3px}.top-status{display:flex;gap:18px;align-items:center}.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;letter-spacing:.08em}.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}.online,.live{color:var(--green)}.clock{font-variant-numeric:tabular-nums;font-weight:700}.workspace{display:grid;grid-template-columns:290px minmax(0,1fr);gap:18px;padding:18px}.sidebar{display:flex;flex-direction:column;gap:14px}.panel-card,.video-card{background:linear-gradient(180deg,rgba(17,35,31,.96),rgba(10,26,22,.96));border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.panel-card{padding:16px}.section-title{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}.section-title span:first-child{color:var(--text);font-weight:800}.badge{padding:5px 8px;border-radius:7px;font-size:10px;font-weight:900}.badge.ok{background:rgba(38,214,155,.13);color:var(--green)}.badge.alert{background:rgba(255,77,94,.14);color:var(--red)}.badge.neutral{background:#1a302a;color:#a9beb8}.panel-meta{display:grid;gap:10px}.panel-meta div,.incident-row{display:flex;justify-content:space-between;gap:12px}.panel-meta span,.incident-row span{color:var(--muted);font-size:12px}.panel-meta strong,.incident-row strong{font-size:12px}.zones{display:grid;grid-template-columns:1fr 1fr;gap:8px}.zone{padding:10px;border:1px solid var(--line);border-radius:11px;background:#0a1714;display:flex;gap:8px;align-items:center}.zone i{width:9px;height:9px;border-radius:50%;background:var(--green)}.zone span{display:block;font-size:11px}.zone small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.zone.alarm{border-color:rgba(255,77,94,.7);background:rgba(255,77,94,.09);animation:pulse 1s infinite}.zone.alarm i{background:var(--red)}@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(255,77,94,.06)}}.compact-actions{display:grid;gap:9px}.btn{border:0;border-radius:10px;padding:11px 13px;color:white;font-weight:800;cursor:pointer;transition:.2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.07)}.btn.danger{background:linear-gradient(135deg,#d93749,var(--red))}.btn.secondary{background:#20352f}.btn.warning{background:linear-gradient(135deg,#e49319,var(--amber));color:#2c1b00;width:100%;margin-top:12px}.main-stage{min-width:0}.video-card{overflow:hidden}.video-head{height:70px;padding:0 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.eyebrow{font-size:10px;color:var(--green);font-weight:900;letter-spacing:.12em}.video-head h1{font-size:20px;margin:3px 0 0}.video-status{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:11px}.video-wrap{position:relative;background:#020706;aspect-ratio:16/8.4;overflow:hidden}.video-wrap video{width:100%;height:100%;object-fit:cover;display:block}.video-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.22),transparent 25%,transparent 72%,rgba(0,0,0,.48));pointer-events:none}.osd{position:absolute;z-index:3;text-shadow:0 2px 4px #000;font-size:11px;display:flex;gap:8px}.osd span{opacity:.78}.top-left{left:16px;top:14px;flex-direction:column;gap:2px}.top-right{right:16px;top:14px;flex-direction:column;align-items:flex-end;gap:2px}.bottom-left{left:16px;bottom:14px;align-items:center}.rec-dot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:.25}}.alarm-overlay{position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);display:flex;gap:14px;align-items:center;width:min(560px,82%);padding:18px 20px;border:1px solid rgba(255,77,94,.8);border-radius:14px;background:rgba(63,4,12,.9);box-shadow:0 0 0 999px rgba(20,0,3,.25),0 18px 70px rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.25s}.alarm-overlay.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.alarm-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--red);font-size:28px;font-weight:900}.alarm-overlay span,.alarm-overlay small{display:block}.alarm-overlay span{font-size:10px;letter-spacing:.12em;color:#ffc4ca}.alarm-overlay strong{display:block;font-size:19px;margin:4px 0}.alarm-overlay small{color:#ffbdc3}.missing-video{position:absolute;inset:0;display:none;place-content:center;text-align:center;padding:30px;background:linear-gradient(135deg,#0b1815,#132820);z-index:2}.missing-video.show{display:grid}.missing-video strong{font-size:22px}.missing-video span{color:var(--muted);max-width:560px;margin-top:8px;line-height:1.5}.missing-video code{color:var(--green)}.timeline{padding:12px 16px 16px}.timeline-label{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-bottom:8px}.timeline-track{height:7px;background:#1e332d;border-radius:99px;position:relative;overflow:visible}.timeline-progress{height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:99px}.event-marker{position:absolute;top:-4px;left:42%;width:3px;height:15px;background:var(--red);box-shadow:0 0 0 3px rgba(255,77,94,.18);display:none}.event-marker.show{display:block}.lower-grid{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px;margin-top:14px}.incident-empty{text-align:center;padding:26px 8px}.incident-empty span{display:block;font-weight:800}.incident-empty small{display:block;color:var(--muted);margin-top:6px}.incident-details{display:none}.incident-details.show{display:block}.critical-text{color:var(--red)}.sop{list-style:none;padding:0;margin:0;display:grid;gap:8px}.sop li{display:flex;gap:10px;align-items:center;padding:9px;border:1px solid var(--line);border-radius:10px;background:#0a1714}.sop li>span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#183b31;color:var(--green);font-weight:900;font-size:11px}.sop strong,.sop small{display:block}.sop strong{font-size:11px}.sop small{color:var(--muted);font-size:9px;margin-top:2px}.sop li.done{border-color:rgba(38,214,155,.35)}.sop li.done>span{background:var(--green);color:#042017}.event-log{display:grid;gap:8px;max-height:220px;overflow:auto}.log-item{display:grid;grid-template-columns:54px 1fr;gap:9px;padding:9px;border-radius:9px;background:#0a1714;border-left:3px solid #27483f}.log-item.alert{border-left-color:var(--red)}.log-item.ok{border-left-color:var(--green)}.log-item time{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}.log-item strong{display:block;font-size:10px}.log-item span{display:block;color:var(--muted);font-size:9px;margin-top:2px}@media(max-width:1050px){.workspace{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr}.lower-grid{grid-template-columns:1fr 1fr}.lower-grid article:last-child{grid-column:1/-1}}@media(max-width:700px){.topbar{padding:0 14px}.brand span,.video-status>span:last-child{display:none}.workspace{padding:10px}.sidebar,.lower-grid{display:grid;grid-template-columns:1fr}.video-wrap{aspect-ratio:16/10}.alarm-overlay strong{font-size:15px}.top-status .pill{display:none}}
 
-
-/* Intelbras-inspired visual system */
-:root{--bg:#eef3f0;--panel:#ffffff;--panel2:#f4f7f5;--line:#d8e2dc;--text:#1e2924;--muted:#6e7d75;--accent:#00a859;--danger:#dc3545;--warn:#f0a500;--ok:#00a859;--critical:#b92235}
-body{background:linear-gradient(180deg,#f7faf8,#eaf1ed);color:var(--text)}
-.topbar{background:#ffffff;border-bottom:3px solid var(--accent);box-shadow:0 2px 12px rgba(20,70,45,.08)}
-.brand-mark{background:var(--accent);border-radius:4px;font-size:15px}.brand span{color:#6d7d74}.top-status{color:#53665c}
-.card{background:#fff;border-color:#dce5df;box-shadow:0 8px 24px rgba(35,75,55,.08)}
-.panel-display{background:#e9f6ef;border-color:#a5d9bd;color:#087b44}.panel-display small{color:#5e8b72}
-button{background:#fff;color:#26372e;border-color:#cddbd3}button:hover{background:#edf8f2;border-color:#79c69e}button.primary{background:var(--accent);border-color:var(--accent)}
-.badge{background:#e5f5ec;color:#087b44}.section-subtitle{color:#6e7d75}.health-grid div,.detail-grid div{background:#f3f7f5}
-.floorplan{background:#f8faf9;border-color:#cedbd4}.room{border-color:#c7d7ce;color:#617269}.room:hover,.room.selected-room{background:#e2f5ea;color:#087b44;border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.marker{background:#00a859;border-color:#d9f4e6}.camera-tile{background:#fff;border-color:#d4e0d9}.camera-tile:hover,.camera-tile.selected-camera{border-color:var(--accent)}.camera-thumb{background:linear-gradient(135deg,#dce9e2,#a9c9b8)}
-.video-placeholder,.room-video{background:#111b16;border-color:#c8d8cf}.sop{background:#f2f7f4}.sop ol{color:#3c4c43}.console{background:#102019;color:#9ce5bd;border-color:#b9d4c4}.tab.active{background:#dff3e8;color:#087b44}.timeline{border-color:#dbe5df}.timeline-item{border-color:#e3ebe6}
-footer{color:#718178}
-
-</style>
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">AMT</div>
-      <div><strong>AMT Security</strong><span>Alarm Management Console · SBO Integration</span></div>
-    </div>
-    <div class="top-status">
-      <span class="dot online"></span><span>System online</span>
-      <span id="clock"></span>
-    </div>
-  </header>
-
-  <main class="layout">
-    <aside class="panel card">
-      <div class="section-title"><span>Intelbras panel</span><span class="badge">AMT 2008 RF</span></div>
-      <div class="panel-display">
-        <div><small>ACCOUNT</small><strong>1234</strong></div>
-        <div><small>STATUS</small><strong id="panelStatus">DISARMED</strong></div>
-        <div><small>COMM</small><strong id="commStatus">ONLINE</strong></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <strong>AMT Security Console</strong>
+          <span>SBO Integration Demo · Version 2.0</span>
+        </div>
       </div>
-
-      <div class="button-row">
-        <button id="armBtn" class="primary">Arm</button>
-        <button id="disarmBtn">Disarm</button>
-        <button id="resetBtn">Reset alarms</button>
+      <div class="top-status">
+        <span class="pill online"><i></i> SYSTEM ONLINE</span>
+        <span id="topClock" class="clock">--:--:--</span>
       </div>
+    </header>
 
-      <div class="section-subtitle">Zones</div>
-      <div id="zones" class="zones"></div>
-
-      <div class="section-subtitle">System events</div>
-      <div class="event-buttons">
-        <button data-system-event="panic">Panic</button>
-        <button data-system-event="fire">Fire</button>
-        <button data-system-event="medical">Medical</button>
-        <button data-system-event="tamper">Tamper</button>
-        <button data-system-event="battery">Low battery</button>
-        <button data-system-event="line_cut">Line failure</button>
-      </div>
-
-      <div class="health-grid">
-        <div><span>Battery</span><strong id="batteryValue">13.6 V</strong></div>
-        <div><span>Line</span><strong id="lineValue">Normal</strong></div>
-        <div><span>Sirens</span><strong id="sirenValue">Ready</strong></div>
-        <div><span>Buffer</span><strong id="bufferValue">0 / 256</strong></div>
-      </div>
-    </aside>
-
-    <section class="workspace">
-      <div class="stats-grid">
-        <div class="stat card"><span>Active alarms</span><strong id="activeCount">0</strong></div>
-        <div class="stat card"><span>Events today</span><strong id="eventCount">0</strong></div>
-        <div class="stat card"><span>Critical</span><strong id="criticalCount">0</strong></div>
-        <div class="stat card"><span>Acknowledged</span><strong id="ackCount">0</strong></div>
-      </div>
-
-      <div class="two-col">
-        <section class="card map-card">
-          <div class="section-title"><span>Site map</span><span class="muted">Demo Branch · Mexico City</span></div>
-          <div id="floorplan" class="floorplan">
-            <div class="room lobby" data-room-camera="CAM-001">Lobby / Main entrance</div>
-            <div class="room sales" data-room-camera="CAM-002">Sales floor</div>
-            <div class="room storage" data-room-camera="CAM-003">Storage</div>
-            <div class="room office" data-room-camera="CAM-002">Office</div>
-            <div class="room server" data-room-camera="CAM-004">Server room</div>
-            <div class="room parking" data-room-camera="CAM-003">Parking</div>
-            <div id="mapMarkers"></div>
-          </div>
-          <div class="camera-strip" id="cameraStrip"></div>
-          <div class="room-video-wrap">
-            <div class="room-video-header"><strong id="roomVideoTitle">Selected room · Main Entrance</strong><span class="muted">Click a room or camera</span></div>
-            <div class="room-video"><span>LIVE</span><video id="roomVideo" muted autoplay loop playsinline preload="metadata" poster="cam-main-entrance.jpg"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="roomVideoCamera">CAM-001 · Main Entrance</strong></div>
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="panel-card panel-state">
+          <div class="section-title"><span>AMT 2008 RF</span><span id="panelBadge" class="badge ok">ARMED</span></div>
+          <div class="panel-meta">
+            <div><span>Account</span><strong>0042</strong></div>
+            <div><span>Transport</span><strong>IP / Contact ID</strong></div>
+            <div><span>Last heartbeat</span><strong id="heartbeat">Now</strong></div>
           </div>
         </section>
 
-        <section class="card event-card">
-          <div class="section-title"><span>Selected incident</span><span id="selectedSeverity" class="badge neutral">No incident</span></div>
-          <div id="emptyIncident" class="empty-state">Trigger a panel event to start the integration flow.</div>
-          <div id="incidentDetail" class="incident-detail hidden">
-            <div class="incident-heading">
-              <div><small id="selectedId"></small><h2 id="selectedTitle"></h2><p id="selectedLocation"></p></div>
-              <div class="incident-actions"><button id="ackBtn" class="primary">Acknowledge</button><button id="closeBtn">Close</button></div>
+        <section class="panel-card">
+          <div class="section-title"><span>Zones</span><span>8 / 8 online</span></div>
+          <div class="zones" id="zones"></div>
+        </section>
+
+        <section class="panel-card compact-actions">
+          <div class="section-title"><span>Demo controls</span></div>
+          <button id="triggerBtn" class="btn danger">Trigger fire event</button>
+          <button id="resetBtn" class="btn secondary">Reset scenario</button>
+        </section>
+      </aside>
+
+      <section class="main-stage">
+        <section class="video-card">
+          <div class="video-head">
+            <div>
+              <span class="eyebrow">CAM-004</span>
+              <h1>Server Room</h1>
             </div>
-            <div class="detail-grid">
-              <div><span>Source</span><strong id="selectedSource"></strong></div>
-              <div><span>Contact ID</span><strong id="selectedCode"></strong></div>
-              <div><span>Zone</span><strong id="selectedZone"></strong></div>
-              <div><span>Status</span><strong id="selectedStatus"></strong></div>
+            <div class="video-status">
+              <span class="pill live"><i></i> LIVE</span>
+              <span>1920 × 1080 · 25 FPS</span>
             </div>
-            <div class="video-placeholder"><span>LIVE</span><video id="incidentVideo" muted autoplay loop playsinline preload="metadata" poster="cam-main-entrance.jpg"><source src="cam-main-entrance.mp4" type="video/mp4"></video><strong id="selectedCamera">No camera assigned</strong></div>
-            <div class="sop"><strong>Standard operating procedure</strong><ol id="sopList"></ol></div>
+          </div>
+
+          <div class="video-wrap" id="videoWrap">
+            <video id="cameraVideo" muted loop playsinline preload="metadata" poster="server-room-poster.svg">
+              <source src="mixkit-security-cam-capturing-a-fire-in-the-server-room-23283-hd-ready.mp4" type="video/mp4" />
+            </video>
+            <div class="video-shade"></div>
+            <div class="osd top-left">
+              <strong>HQ · DATA CENTER</strong>
+              <span>CAM-004 · SERVER ROOM</span>
+            </div>
+            <div class="osd top-right">
+              <span id="videoDate">----/--/--</span>
+              <strong id="videoClock">--:--:--</strong>
+            </div>
+            <div class="osd bottom-left">
+              <span class="rec-dot"></span><strong>REC</strong>
+              <span>H.264</span><span>3.8 Mbps</span>
+            </div>
+            <div id="alarmOverlay" class="alarm-overlay" aria-live="polite">
+              <div class="alarm-icon">!</div>
+              <div>
+                <span>CRITICAL EVENT</span>
+                <strong>FIRE DETECTED · ZONE 08</strong>
+                <small>Video associated automatically by SBO</small>
+              </div>
+            </div>
+            <div id="missingVideo" class="missing-video">
+              <strong>Video pending</strong>
+              <span>Place the Mixkit MP4 inside the <code>videos</code> folder using the exact filename specified in README.md.</span>
+            </div>
+          </div>
+
+          <div class="timeline">
+            <div class="timeline-label"><span>Live timeline</span><span id="timelineTime">00:00</span></div>
+            <div class="timeline-track"><div id="timelineProgress" class="timeline-progress"></div><div id="eventMarker" class="event-marker" title="Fire alarm"></div></div>
           </div>
         </section>
-      </div>
 
-      <div class="two-col lower">
-        <section class="card">
-          <div class="section-title"><span>Integration console</span><button id="copyJsonBtn" class="small">Copy JSON</button></div>
-          <div class="console-tabs"><button class="tab active" data-tab="raw">Raw Contact ID</button><button class="tab" data-tab="json">Normalized JSON</button></div>
-          <pre id="consoleRaw" class="console">Waiting for an event...</pre>
-          <pre id="consoleJson" class="console hidden">{}</pre>
+        <section class="lower-grid">
+          <article class="panel-card incident-card">
+            <div class="section-title"><span>Active incident</span><span id="incidentStatus" class="badge neutral">MONITORING</span></div>
+            <div class="incident-empty" id="incidentEmpty">
+              <span>No active alarms</span>
+              <small>The system is receiving panel heartbeats normally.</small>
+            </div>
+            <div class="incident-details" id="incidentDetails">
+              <div class="incident-row"><span>Event</span><strong>Fire alarm</strong></div>
+              <div class="incident-row"><span>Zone</span><strong>08 · Server Room</strong></div>
+              <div class="incident-row"><span>Contact ID</span><strong>110 · Fire</strong></div>
+              <div class="incident-row"><span>Priority</span><strong class="critical-text">Critical</strong></div>
+              <button id="ackBtn" class="btn warning">Acknowledge alarm</button>
+            </div>
+          </article>
+
+          <article class="panel-card">
+            <div class="section-title"><span>SOP response</span><span>FIRE-01</span></div>
+            <ol class="sop" id="sopList">
+              <li><span>1</span><div><strong>Verify video</strong><small>Confirm smoke or flame in the associated camera.</small></div></li>
+              <li><span>2</span><div><strong>Notify site</strong><small>Call the local security supervisor.</small></div></li>
+              <li><span>3</span><div><strong>Dispatch response</strong><small>Activate emergency response protocol.</small></div></li>
+              <li><span>4</span><div><strong>Document closure</strong><small>Record evidence and operator notes.</small></div></li>
+            </ol>
+          </article>
+
+          <article class="panel-card">
+            <div class="section-title"><span>Event stream</span><span>Realtime</span></div>
+            <div id="eventLog" class="event-log"></div>
+          </article>
         </section>
-
-        <section class="card">
-          <div class="section-title"><span>Demo scenarios</span><span class="muted">Automated workflows</span></div>
-          <div class="scenario-grid">
-            <button data-scenario="unauthorized">Unauthorized entry</button>
-            <button data-scenario="panic">Panic button</button>
-            <button data-scenario="fire">Fire emergency</button>
-            <button data-scenario="comms">Communication failure</button>
-          </div>
-          <div class="section-subtitle">Event timeline</div>
-          <div id="timeline" class="timeline"><div class="empty-line">No events received.</div></div>
-        </section>
-      </div>
-    </section>
-  </main>
-
-  <footer>AMT integration concept · Interface inspired by professional Intelbras security products.</footer>
+      </section>
+    </main>
+  </div>
   <script>
-// contact-id-parser.js
-function buildContactId({account='1234', qualifier='1', code='130', partition='01', zone='001'}) {
-  return `${account} 18 ${qualifier}${code} ${partition} ${String(zone).padStart(3,'0')}`;
-}
-function parseContactId(raw) {
-  const parts = raw.trim().split(/\s+/);
-  if (parts.length < 5) throw new Error('Invalid Contact ID message');
-  return {account:parts[0], messageType:parts[1], qualifier:parts[2][0], eventCode:parts[2].slice(1), partition:parts[3], zone:parts[4]};
-}
-
-
-// event-mapper.js
-const EVENT_CATALOG = {
-  '130': {type:'intrusion', title:'Intrusion alarm', severity:'high', sop:['Verify associated camera','Contact site representative','Dispatch security if confirmed','Document outcome']},
-  '120': {type:'panic', title:'Panic alarm', severity:'critical', sop:['Keep incident confidential','Open all nearby cameras','Notify emergency response','Maintain operator observation']},
-  '110': {type:'fire', title:'Fire alarm', severity:'critical', sop:['Verify smoke or flames','Call fire services','Start evacuation procedure','Preserve event evidence']},
-  '100': {type:'medical', title:'Medical emergency', severity:'critical', sop:['Verify location','Contact medical services','Guide onsite responder','Record response times']},
-  '137': {type:'tamper', title:'Sensor tamper', severity:'high', sop:['Inspect associated camera','Notify maintenance/security','Check simultaneous zone alarms','Escalate if sabotage suspected']},
-  '302': {type:'battery', title:'Low system battery', severity:'medium', sop:['Create maintenance ticket','Confirm AC power','Schedule battery replacement','Track restoration event']},
-  '351': {type:'line_cut', title:'Communication line failure', severity:'high', sop:['Verify alternate communication','Contact site','Escalate prolonged outage','Confirm restoration']},
-  '401': {type:'armed', title:'System armed', severity:'info', sop:['Record user action']},
-  '402': {type:'disarmed', title:'System disarmed', severity:'info', sop:['Record user action']},
-  '602': {type:'test', title:'Periodic test', severity:'info', sop:['Confirm heartbeat received']}
-};
-function normalizeEvent(parsed, zoneInfo, cameraInfo) {
-  const catalog = EVENT_CATALOG[parsed.eventCode] || {type:'unknown',title:'Unknown panel event',severity:'medium',sop:['Review raw event']};
-  const ts = new Date();
-  return {
-    id:`EVT-${ts.toISOString().replace(/[-:.TZ]/g,'').slice(0,14)}-${Math.floor(Math.random()*900+100)}`,
-    source:{manufacturer:'Intelbras',model:'AMT 2008 RF',panelId:'AMT-MX-001',account:parsed.account},
-    event:{protocol:'CONTACT_ID',code:parsed.eventCode,type:catalog.type,description:catalog.title,severity:catalog.severity,qualifier:parsed.qualifier},
-    location:{site:'Corporate Site 01',partition:parsed.partition,zone:Number(parsed.zone),zoneName:zoneInfo?.name || 'System'},
-    relatedResources:{cameras:cameraInfo?[cameraInfo.id]:[],floorplan:'ground-floor'},
-    timestamp:ts.toISOString(),status:'new',sop:catalog.sop
-  };
-}
-
-
-// panel-simulator.js
-
-class PanelSimulator {
-  constructor(onEvent){this.onEvent=onEvent;this.armed=false;this.buffer=0;this.alarmedZones=new Set();}
-  emit(code, zone=0, qualifier='1'){this.buffer=Math.min(256,this.buffer+1);const raw=buildContactId({code,zone,qualifier});this.onEvent(raw);}
-  arm(){this.armed=true;this.emit('401',0);}
-  disarm(){this.armed=false;this.emit('402',0);}
-  triggerZone(zone){this.alarmedZones.add(zone);this.emit('130',zone);}
-  triggerSystem(type){const map={panic:'120',fire:'110',medical:'100',tamper:'137',battery:'302',line_cut:'351'};this.emit(map[type],type==='tamper'?3:0);}
-  reset(){this.alarmedZones.clear();}
-}
-
-
-// demo-scenarios.js
-const delay=ms=>new Promise(r=>setTimeout(r,ms));
-async function runScenario(name,panel){
-  if(name==='unauthorized'){panel.arm();await delay(900);panel.triggerZone(1);await delay(700);panel.triggerZone(2);}
-  if(name==='panic'){panel.triggerSystem('panic');await delay(700);panel.triggerZone(6);}
-  if(name==='fire'){panel.triggerSystem('fire');await delay(800);panel.triggerZone(4);}
-  if(name==='comms'){panel.triggerSystem('line_cut');await delay(900);panel.triggerSystem('battery');}
-}
-
-
-// app.js
-
-
-
-
-const zones = [
- {id:1,name:'Main entrance',x:19,y:65,camera:'CAM-001'}, {id:2,name:'Sales floor',x:58,y:28,camera:'CAM-002'},
- {id:3,name:'Storage door',x:49,y:75,camera:'CAM-003'}, {id:4,name:'Server room',x:85,y:75,camera:'CAM-004'},
- {id:5,name:'Office window',x:74,y:28,camera:'CAM-002'}, {id:6,name:'Parking panic',x:67,y:76,camera:'CAM-003'},
- ...Array.from({length:18},(_,i)=>({id:i+7,name:`Expansion zone ${i+7}`,x:10,y:10,camera:null}))
-];
-const cameras=[{id:'CAM-001',name:'Main Entrance',video:'cam-main-entrance.mp4',poster:'cam-main-entrance.jpg'},{id:'CAM-002',name:'Sales Floor / Office',video:'cam-sales-floor.mp4',poster:'cam-sales-floor.jpg'},{id:'CAM-003',name:'Storage / Parking',video:'cam-storage-parking.mp4',poster:'cam-storage-parking.jpg'},{id:'CAM-004',name:'Server Room',video:'cam-server-room.mp4',poster:'cam-server-room.jpg'}];
-let events=[], selected=null;
+const zones=[['01','Main entrance'],['02','Reception'],['03','Sales floor'],['04','Warehouse'],['05','Parking'],['06','Office'],['07','Technical area'],['08','Server room']];
 const $=s=>document.querySelector(s);
-const panel=new PanelSimulator(handleRawEvent);
+const zonesEl=$('#zones');
+zones.forEach(([n,name])=>{const d=document.createElement('div');d.className='zone';d.dataset.zone=n;d.innerHTML=`<i></i><div><span>Zone ${n}</span><small>${name}</small></div>`;zonesEl.appendChild(d)});
+const video=$('#cameraVideo'),missing=$('#missingVideo'),progress=$('#timelineProgress'),timelineTime=$('#timelineTime');
+let alarm=false,ack=false;
+function now(){const d=new Date();$('#topClock').textContent=d.toLocaleTimeString('en-GB');$('#videoClock').textContent=d.toLocaleTimeString('en-GB');$('#videoDate').textContent=d.toLocaleDateString('en-CA');}
+setInterval(now,1000);now();
+function log(title,detail,type=''){const row=document.createElement('div');row.className=`log-item ${type}`;row.innerHTML=`<time>${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</time><div><strong>${title}</strong><span>${detail}</span></div>`;$('#eventLog').prepend(row)}
+log('Panel online','Heartbeat received · Account 0042','ok');
+video.addEventListener('loadeddata',()=>{missing.classList.remove('show');video.play().catch(()=>{});log('Camera connected','CAM-004 stream available','ok')});
+video.addEventListener('error',()=>missing.classList.add('show'));
+video.addEventListener('timeupdate',()=>{if(!video.duration)return;progress.style.width=`${(video.currentTime/video.duration)*100}%`;timelineTime.textContent=`${String(Math.floor(video.currentTime/60)).padStart(2,'0')}:${String(Math.floor(video.currentTime%60)).padStart(2,'0')}`});
+function trigger(){if(alarm)return;alarm=true;ack=false;document.querySelector('[data-zone="08"]').classList.add('alarm');$('#panelBadge').className='badge alert';$('#panelBadge').textContent='FIRE ALARM';$('#alarmOverlay').classList.add('show');$('#incidentEmpty').style.display='none';$('#incidentDetails').classList.add('show');$('#incidentStatus').className='badge alert';$('#incidentStatus').textContent='CRITICAL';$('#eventMarker').classList.add('show');log('Fire alarm received','CID 110 · Zone 08 · Server Room','alert');setTimeout(()=>$('#alarmOverlay').classList.remove('show'),4200)}
+function acknowledge(){if(!alarm||ack)return;ack=true;$('#incidentStatus').className='badge ok';$('#incidentStatus').textContent='ACKNOWLEDGED';$('#ackBtn').textContent='Alarm acknowledged';document.querySelectorAll('.sop li')[0].classList.add('done');log('Alarm acknowledged','Operator accepted incident FIRE-01','ok')}
+function reset(){alarm=false;ack=false;document.querySelector('[data-zone="08"]').classList.remove('alarm');$('#panelBadge').className='badge ok';$('#panelBadge').textContent='ARMED';$('#incidentStatus').className='badge neutral';$('#incidentStatus').textContent='MONITORING';$('#incidentEmpty').style.display='block';$('#incidentDetails').classList.remove('show');$('#alarmOverlay').classList.remove('show');$('#eventMarker').classList.remove('show');$('#ackBtn').textContent='Acknowledge alarm';document.querySelectorAll('.sop li').forEach(x=>x.classList.remove('done'));if(video.readyState>=2){video.currentTime=0;video.play().catch(()=>{})}log('Scenario reset','Panel returned to normal state','ok')}
+$('#triggerBtn').addEventListener('click',trigger);$('#ackBtn').addEventListener('click',acknowledge);$('#resetBtn').addEventListener('click',reset);
+setInterval(()=>{$('#heartbeat').textContent='Now';if(!alarm)log('Panel heartbeat','Account 0042 · Communication normal','ok')},30000);
 
-function init(){
- $('#zones').innerHTML=zones.map(z=>`<button class="zone" data-zone="${z.id}" title="${z.name}">Z${String(z.id).padStart(2,'0')}</button>`).join('');
- $('#mapMarkers').innerHTML=zones.slice(0,6).map(z=>`<div id="marker-${z.id}" class="marker" style="left:${z.x}%;top:${z.y}%">${z.id}</div>`).join('');
- $('#cameraStrip').innerHTML=cameras.map(c=>`<div class="camera-tile" data-camera="${c.id}"><div class="camera-thumb" style="background-image:url('${c.poster}');background-size:cover;background-position:center"></div><span>${c.id} · ${c.name}</span></div>`).join('');
- bind(); tick(); setInterval(tick,1000); render();
-}
-function bind(){
- $('#armBtn').onclick=()=>panel.arm(); $('#disarmBtn').onclick=()=>panel.disarm(); $('#resetBtn').onclick=()=>{panel.reset();render();};
- document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>panel.triggerZone(Number(b.dataset.zone)));
- document.querySelectorAll('[data-system-event]').forEach(b=>b.onclick=()=>panel.triggerSystem(b.dataset.systemEvent));
- document.querySelectorAll('[data-scenario]').forEach(b=>b.onclick=()=>runScenario(b.dataset.scenario,panel));
- document.querySelectorAll('[data-camera]').forEach(el=>el.onclick=()=>selectCamera(el.dataset.camera));
- document.querySelectorAll('[data-room-camera]').forEach(el=>el.onclick=()=>{selectCamera(el.dataset.roomCamera,el.textContent.trim());document.querySelectorAll('[data-room-camera]').forEach(r=>r.classList.toggle('selected-room',r===el));});
- document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
- $('#ackBtn').onclick=()=>updateSelected('acknowledged'); $('#closeBtn').onclick=()=>updateSelected('closed');
- $('#copyJsonBtn').onclick=async()=>{if(selected){await navigator.clipboard.writeText(JSON.stringify(selected,null,2));$('#copyJsonBtn').textContent='Copied';setTimeout(()=>$('#copyJsonBtn').textContent='Copy JSON',1000)}};
-}
-
-
-function showVideoFallback(video,camera){
-  video.poster='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="100%" height="100%" fill="#17241f"/><text x="50%" y="46%" text-anchor="middle" fill="#fff" font-family="Arial" font-size="24">${camera.id} · ${camera.name}</text><text x="50%" y="56%" text-anchor="middle" fill="#8fb9a7" font-family="Arial" font-size="16">Video unavailable — verify MP4 in repository root</text></svg>`);
-}
-
-function selectCamera(cameraId, roomName){
- const camera=cameras.find(c=>c.id===cameraId); if(!camera)return;
- const video=$('#roomVideo'); video.pause(); video.poster='./'+camera.poster; video.src='./'+camera.video; video.load(); const promise=video.play(); if(promise) promise.catch(()=>showVideoFallback(video,camera));
- $('#roomVideoTitle').textContent=`Selected room · ${roomName||camera.name}`;
- $('#roomVideoCamera').textContent=`${camera.id} · ${camera.name}`;
- document.querySelectorAll('[data-camera]').forEach(el=>el.classList.toggle('selected-camera',el.dataset.camera===cameraId));
-}
-function setIncidentVideo(cameraId){
- const camera=cameras.find(c=>c.id===cameraId); const video=$('#incidentVideo');
- if(!camera){video.removeAttribute('src');video.load();return;}
- video.pause();video.poster='./'+camera.poster;video.src='./'+camera.video;video.load();const promise=video.play();if(promise)promise.catch(()=>showVideoFallback(video,camera));
-}
-function tick(){ $('#clock').textContent=new Date().toLocaleString(); }
-function handleRawEvent(raw){
- const parsed=parseContactId(raw); const zone=zones.find(z=>z.id===Number(parsed.zone)); const camera=cameras.find(c=>c.id===zone?.camera);
- const ev=normalizeEvent(parsed,zone,camera); ev.raw=raw; events.unshift(ev); selected=ev;
- if(ev.event.type==='armed') panel.armed=true; if(ev.event.type==='disarmed') panel.armed=false;
- render();
-}
-function updateSelected(status){if(!selected)return; selected.status=status; render();}
-function render(){
- $('#panelStatus').textContent=panel.armed?'ARMED':'DISARMED'; $('#bufferValue').textContent=`${panel.buffer} / 256`;
- document.querySelectorAll('.zone').forEach(b=>b.classList.toggle('alarm',panel.alarmedZones.has(Number(b.dataset.zone))));
- zones.slice(0,6).forEach(z=>$('#marker-'+z.id)?.classList.toggle('alarm',panel.alarmedZones.has(z.id)));
- $('#activeCount').textContent=events.filter(e=>!['closed'].includes(e.status)&&['high','critical'].includes(e.event.severity)).length;
- $('#eventCount').textContent=events.length; $('#criticalCount').textContent=events.filter(e=>e.event.severity==='critical').length; $('#ackCount').textContent=events.filter(e=>e.status==='acknowledged').length;
- $('#timeline').innerHTML=events.length?events.slice(0,30).map(e=>`<div class="timeline-item" data-id="${e.id}"><span>${new Date(e.timestamp).toLocaleTimeString()}</span><strong>${e.event.description}${e.location.zone?` · Z${e.location.zone}`:''}</strong><em>${e.status}</em></div>`).join(''):'<div class="empty-line">No events received.</div>';
- document.querySelectorAll('.timeline-item').forEach(i=>i.onclick=()=>{selected=events.find(e=>e.id===i.dataset.id);renderIncident();});
- renderIncident();
-}
-function renderIncident(){
- if(!selected){$('#emptyIncident').classList.remove('hidden');$('#incidentDetail').classList.add('hidden');return;}
- $('#emptyIncident').classList.add('hidden');$('#incidentDetail').classList.remove('hidden');
- $('#selectedSeverity').textContent=selected.event.severity.toUpperCase();$('#selectedSeverity').className=`badge severity-${selected.event.severity}`;
- $('#selectedId').textContent=selected.id;$('#selectedTitle').textContent=selected.event.description;$('#selectedLocation').textContent=`${selected.location.site} · ${selected.location.zoneName}`;
- $('#selectedSource').textContent=`${selected.source.manufacturer} ${selected.source.model}`;$('#selectedCode').textContent=selected.event.code;$('#selectedZone').textContent=selected.location.zone||'System';$('#selectedStatus').textContent=selected.status;
- const selectedCameraId=selected.relatedResources.cameras[0]; $('#selectedCamera').textContent=selectedCameraId||'No camera assigned'; setIncidentVideo(selectedCameraId); if(selectedCameraId)selectCamera(selectedCameraId,selected.location.zoneName); $('#sopList').innerHTML=selected.sop.map(s=>`<li>${s}</li>`).join('');
- $('#consoleRaw').textContent=`RECEIVED: ${selected.raw}\n\nACCOUNT: ${selected.source.account}\nEVENT CODE: ${selected.event.code}\nPARTITION: ${selected.location.partition}\nZONE: ${String(selected.location.zone).padStart(3,'0')}\nQUALIFIER: ${selected.event.qualifier}`;
- $('#consoleJson').textContent=JSON.stringify({...selected,raw:undefined},null,2);
-}
-function switchTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));$('#consoleRaw').classList.toggle('hidden',tab!=='raw');$('#consoleJson').classList.toggle('hidden',tab!=='json');}
-init();
-
-</script>
+  </script>
 </body>
 </html>
