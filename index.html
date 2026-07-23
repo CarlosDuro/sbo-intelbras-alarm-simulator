@@ -1,122 +1,583 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AMT Security Console · SBO Integration</title>
+<title>AMT Security Console</title>
 <style>
-:root{--bg:#07110e;--panel:#101b17;--panel2:#14231d;--line:#294137;--green:#21d07a;--text:#eef8f2;--muted:#9fb3a8;--red:#ff4d55;--amber:#ffb020}
-*{box-sizing:border-box}body{margin:0;background:#07110e;color:var(--text);font:14px Segoe UI,Arial,sans-serif}
-header{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#09140f;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-.brand{display:flex;gap:11px;align-items:center}.logo{width:35px;height:35px;border-radius:9px;background:var(--green);color:#07110e;display:grid;place-items:center;font-weight:900}
-small,.muted{color:var(--muted)}.online{display:flex;gap:9px;align-items:center}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
-.siren{display:none;padding:8px;text-align:center;background:#921722;font-weight:900}.siren.on{display:block}
-.layout{display:grid;grid-template-columns:280px minmax(500px,1fr) 350px;gap:14px;padding:14px;max-width:1800px;margin:auto}
+:root{
+  --bg:#07110e;--panel:#101b17;--panel2:#14231d;--line:#294137;
+  --green:#21d07a;--green2:#0da85d;--text:#eef8f2;--muted:#9fb3a8;
+  --red:#ff4d55;--red2:#8d1d28;--amber:#ffb020;--blue:#3aa0ff
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px "Segoe UI",Arial,sans-serif}
+button,select{font:inherit}
+header{
+  height:66px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;background:#09140f;border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:20
+}
+.brand{display:flex;gap:11px;align-items:center}
+.logo{width:36px;height:36px;border-radius:9px;background:var(--green);color:#07110e;display:grid;place-items:center;font-weight:900}
+.brand small,.muted,small{color:var(--muted)}
+.online{display:flex;gap:9px;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.topstats{display:flex;gap:9px;align-items:center}
+.topstat{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#0c1914;font-size:12px}
+.siren{display:none;padding:9px;text-align:center;background:#941b25;font-weight:900;letter-spacing:.05em}
+.siren.on{display:block;animation:flash .8s infinite}
+@keyframes flash{50%{background:#d92635}}
+.layout{display:grid;grid-template-columns:290px minmax(520px,1fr) 370px;gap:14px;padding:14px;max-width:1900px;margin:auto}
 .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-bottom:14px}
 .head{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}
-.head h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0}.body{padding:13px}
-.tag{font-size:11px;padding:4px 8px;border-radius:20px;background:#20382d;color:var(--muted)}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}
-.metrics,.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:#0b1712;border:1px solid var(--line);border-radius:9px;padding:10px}.metric b{display:block;margin-top:4px}
-button,select{font:inherit}.btn,select{border:1px solid var(--line);background:#182a22;color:white;border-radius:8px;padding:10px;cursor:pointer}.btn:hover{border-color:var(--green)}.primary{background:#0ca35a}.danger{background:#651f27;border-color:#a9333d}.warn{background:#624617;border-color:#9f711c}
-.videoHead{display:grid;grid-template-columns:1fr minmax(220px,320px);gap:10px;align-items:center}.cameraSelect{width:100%;background:#0b1712}
-.videoWrap{position:relative;aspect-ratio:16/9;background:#000}.videoWrap video{width:100%;height:100%;object-fit:cover;display:block}
-.hud{position:absolute;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;text-shadow:0 1px 4px #000;font-weight:800}.camName{position:absolute;bottom:13px;left:14px;background:#07110ec9;padding:6px 9px;border-radius:5px}
-.alarmBorder{position:absolute;inset:0;border:5px solid transparent;pointer-events:none}.alarmBorder.active{border-color:var(--red);animation:pulse .9s infinite}
-.banner{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#770e18e8;border:1px solid #ff858b;border-radius:10px;padding:17px 25px;text-align:center}.banner.show{display:block}.banner b{display:block;font-size:23px}
-@keyframes pulse{50%{opacity:.55}}.tools{display:flex;gap:8px;flex-wrap:wrap;padding:11px;border-top:1px solid var(--line)}
-.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;background:#0b1712;border:1px solid var(--line);border-radius:9px;padding:9px;cursor:pointer}.item:hover,.item.selected{border-color:var(--green);background:#123123}.num{width:29px;height:29px;display:grid;place-items:center;background:#20382d;border-radius:7px;font-weight:800}
-.incident{padding:14px}.empty{text-align:center;color:var(--muted);padding:22px}.activeIncident{display:none}.activeIncident.show{display:block}.activeIncident h1{font-size:22px;margin:6px 0}.steps{display:grid;gap:7px;margin:12px 0}.step{color:var(--muted)}.step.done{color:var(--green)}
-label{display:block;color:var(--muted);font-size:12px;margin:9px 0 5px}.wide{width:100%}.log{height:245px;overflow:auto}.logRow{display:grid;grid-template-columns:68px 1fr;gap:7px;padding:8px 0;border-bottom:1px solid #21352d;font-size:12px}.logRow time{color:var(--muted)}
-.toast{position:fixed;right:18px;bottom:18px;background:#15281f;border:1px solid var(--green);border-radius:9px;padding:12px 16px;opacity:0;transform:translateY(12px);transition:.2s;z-index:30}.toast.show{opacity:1;transform:none}
-@media(max-width:1100px){.layout{grid-template-columns:250px 1fr}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}}
-@media(max-width:760px){.layout{display:block}.right{display:block}.videoHead{grid-template-columns:1fr}.online{display:none}}
+.head h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0}
+.body{padding:13px}
+.tag{font-size:11px;padding:4px 8px;border-radius:20px;background:#20382d;color:var(--muted);white-space:nowrap}
+.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.blue{color:var(--blue)}
+.metrics,.two,.three{display:grid;gap:8px}.metrics,.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
+.metric{background:#0b1712;border:1px solid var(--line);border-radius:9px;padding:10px}
+.metric b{display:block;margin-top:4px}
+.btn,select{border:1px solid var(--line);background:#182a22;color:white;border-radius:8px;padding:10px;cursor:pointer}
+.btn:hover,select:hover{border-color:var(--green)}
+.primary{background:var(--green2)}.danger{background:#651f27;border-color:#a9333d}.warn{background:#624617;border-color:#9f711c}.bluebtn{background:#174b6c;border-color:#2e78a8}
+.wide{width:100%}
+.videoHead{display:grid;grid-template-columns:1fr minmax(240px,340px);gap:10px;align-items:center}
+.cameraSelect{width:100%;background:#0b1712}
+.videoWrap{position:relative;aspect-ratio:16/9;background:#000}
+.videoWrap video{width:100%;height:100%;object-fit:cover;display:block}
+.hud{position:absolute;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;text-shadow:0 1px 4px #000;font-weight:800}
+.camName{position:absolute;bottom:13px;left:14px;background:#07110ed9;padding:6px 9px;border-radius:5px}
+.alarmBorder{position:absolute;inset:0;border:5px solid transparent;pointer-events:none}
+.alarmBorder.active{border-color:var(--red);animation:pulse .9s infinite}
+.banner{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#770e18eb;border:1px solid #ff858b;border-radius:10px;padding:17px 25px;text-align:center;min-width:260px}
+.banner.show{display:block}.banner b{display:block;font-size:23px;margin:4px 0}
+@keyframes pulse{50%{opacity:.55}}
+.tools{display:flex;gap:8px;flex-wrap:wrap;padding:11px;border-top:1px solid var(--line)}
+.list{display:grid;gap:7px}
+.item{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;background:#0b1712;border:1px solid var(--line);border-radius:9px;padding:9px;cursor:pointer}
+.item:hover,.item.selected{border-color:var(--green);background:#123123}
+.num{width:29px;height:29px;display:grid;place-items:center;background:#20382d;border-radius:7px;font-weight:800}
+.incident{padding:14px}
+.empty{text-align:center;color:var(--muted);padding:22px}
+.activeIncident{display:none}.activeIncident.show{display:block}
+.activeIncident h1{font-size:22px;margin:6px 0}
+.steps{display:grid;gap:7px;margin:12px 0}
+.step{color:var(--muted)}.step.done{color:var(--green)}
+label{display:block;color:var(--muted);font-size:12px;margin:9px 0 5px}
+.log{height:245px;overflow:auto}
+.logRow{display:grid;grid-template-columns:70px 1fr;gap:7px;padding:8px 0;border-bottom:1px solid #21352d;font-size:12px}
+.logRow time{color:var(--muted)}
+.floorplan{position:relative;min-height:330px;background:#09140f;border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:7px}
+.room{border:1px solid #355046;border-radius:7px;background:#10211a;padding:9px;cursor:pointer;position:relative;transition:.15s}
+.room:hover,.room.selected{border-color:var(--green);background:#173328}
+.room.alarm{border-color:var(--red);box-shadow:0 0 0 2px #ff4d5538 inset;animation:pulse .9s infinite}
+.room b{display:block;font-size:12px}.room small{font-size:10px}
+.room .sensor{position:absolute;right:7px;bottom:7px;width:9px;height:9px;border-radius:50%;background:var(--green)}
+.room.alarm .sensor{background:var(--red);box-shadow:0 0 8px var(--red)}
+.r1{grid-column:1;grid-row:1}.r2{grid-column:2;grid-row:1}.r3{grid-column:3;grid-row:1}.r4{grid-column:1;grid-row:2}.r5{grid-column:2;grid-row:2}.r6{grid-column:3;grid-row:2}.r7{grid-column:1/3;grid-row:3}.r8{grid-column:3;grid-row:3}
+.output{display:flex;align-items:center;justify-content:space-between;padding:9px;background:#0b1712;border:1px solid var(--line);border-radius:8px}
+.led{width:10px;height:10px;border-radius:50%;background:#40554c}.led.on{background:var(--green);box-shadow:0 0 9px var(--green)}.led.alert{background:var(--red);box-shadow:0 0 9px var(--red)}
+.queue{display:grid;gap:7px}
+.queueItem{padding:9px;border:1px solid var(--line);border-radius:8px;background:#0b1712}
+.queueItem.critical{border-left:4px solid var(--red)}.queueItem.high{border-left:4px solid var(--amber)}.queueItem.info{border-left:4px solid var(--blue)}
+.timer{font-variant-numeric:tabular-nums;font-size:18px;font-weight:800}
+.toast{position:fixed;right:18px;bottom:18px;background:#15281f;border:1px solid var(--green);border-radius:9px;padding:12px 16px;opacity:0;transform:translateY(12px);transition:.2s;z-index:40}
+.toast.show{opacity:1;transform:none}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:50;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modalBox{width:min(520px,100%);background:#101b17;border:1px solid var(--red);border-radius:14px;overflow:hidden;box-shadow:0 20px 70px #000}
+.modalHead{padding:14px;background:#6d1720;font-weight:900;display:flex;justify-content:space-between}
+.modalBody{padding:18px}.modalBody h1{margin:0 0 8px}
+@media(max-width:1200px){.layout{grid-template-columns:270px 1fr}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}}
+@media(max-width:780px){.layout{display:block}.right{display:block}.videoHead{grid-template-columns:1fr}.topstats{display:none}.floorplan{min-height:290px}}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="logo">A</div><div><b>AMT Security Console</b><br><small>SBO Integration Demo · Version 3.1</small></div></div><div class="online"><span class="dot"></span><b>SYSTEM ONLINE</b><span id="clock">--:--:--</span></div></header>
-<div id="siren" class="siren">SIREN / STROBE OUTPUT ACTIVE</div>
+<header>
+  <div class="brand">
+    <div class="logo">A</div>
+    <div><b>AMT Security Console</b><br><small>Integrated Security Operations Platform</small></div>
+  </div>
+  <div class="topstats">
+    <span class="topstat">Site: HQ-SEC-01</span>
+    <span class="topstat">Account: 0042</span>
+    <span class="online"><span class="dot"></span><b>SYSTEM ONLINE</b></span>
+    <span id="clock" class="topstat">--:--:--</span>
+  </div>
+</header>
+
+<div id="siren" class="siren">FIRE OUTPUT ACTIVE · SIREN · STROBE · PGM-01</div>
 
 <main class="layout">
 <section>
-  <div class="card"><div class="head"><h2>AMT 2008 RF Panel</h2><span id="partitionTag" class="tag green">PARTITION A ARMED</span></div><div class="body">
-    <div class="metrics"><div class="metric"><small>Account</small><b>0042</b></div><div class="metric"><small>Communication</small><b id="commState" class="green">IP / Contact ID</b></div><div class="metric"><small>AC power</small><b id="powerState" class="green">Normal</b></div><div class="metric"><small>Battery</small><b id="batteryState" class="green">13.6 V</b></div></div>
-    <div class="two" style="margin-top:9px"><button class="btn primary" onclick="armPartition()">Arm partition</button><button class="btn" onclick="disarmPartition()">Disarm</button><button class="btn danger" onclick="triggerEvent('panic')">Panic alarm</button><button class="btn warn" onclick="toggleBypass()">Bypass zone</button></div>
-  </div></div>
-  <div class="card"><div class="head"><h2>Zones</h2><span class="tag">8 ZONES</span></div><div id="zoneList" class="body list">
-    <div class="item" data-zone="1"><span class="num">01</span><div><b>Reception PIR</b><br><small>Interior</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="2"><span class="num">02</span><div><b>Main door contact</b><br><small>Perimeter</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="3"><span class="num">03</span><div><b>Basement PIR</b><br><small>Interior</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="4"><span class="num">04</span><div><b>Silent panic</b><br><small>24-hour</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="5"><span class="num">05</span><div><b>Vehicle access</b><br><small>Perimeter</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="6"><span class="num">06</span><div><b>Restricted area</b><br><small>Interior</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="7"><span class="num">07</span><div><b>Panel tamper</b><br><small>24-hour</small></div><span class="tag green">NORMAL</span></div>
-    <div class="item" data-zone="8"><span class="num">08</span><div><b>Fire detector</b><br><small>Fire 24-hour</small></div><span class="tag green">NORMAL</span></div>
-  </div></div>
+  <div class="card">
+    <div class="head"><h2>AMT 2008 RF Panel</h2><span id="partitionTag" class="tag green">PARTITION A ARMED</span></div>
+    <div class="body">
+      <div class="metrics">
+        <div class="metric"><small>Communication</small><b id="commState" class="green">IP / Contact ID</b></div>
+        <div class="metric"><small>Panel status</small><b id="panelState" class="green">Ready</b></div>
+        <div class="metric"><small>AC power</small><b id="powerState" class="green">Normal</b></div>
+        <div class="metric"><small>Battery</small><b id="batteryState" class="green">13.6 V</b></div>
+      </div>
+      <label>Partitions</label>
+      <div class="two">
+        <button class="btn primary" onclick="setPartition('A',true)">Arm A</button>
+        <button class="btn" onclick="setPartition('A',false)">Disarm A</button>
+        <button class="btn primary" onclick="setPartition('B',true)">Arm B</button>
+        <button class="btn" onclick="setPartition('B',false)">Disarm B</button>
+      </div>
+      <label>Quick actions</label>
+      <div class="two">
+        <button class="btn danger" onclick="triggerEvent('panic')">Panic alarm</button>
+        <button class="btn warn" onclick="toggleBypass()">Bypass zone</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><h2>Outputs</h2><span class="tag">AMT STATUS</span></div>
+    <div class="body list">
+      <div class="output"><span>Siren output</span><span id="sirenLed" class="led"></span></div>
+      <div class="output"><span>Strobe output</span><span id="strobeLed" class="led"></span></div>
+      <div class="output"><span>PGM-01 Fire relay</span><span id="pgmLed" class="led"></span></div>
+      <div class="output"><span>Monitoring link</span><span class="led on"></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><h2>Zones</h2><span class="tag">8 ZONES</span></div>
+    <div id="zoneList" class="body list">
+      <div class="item" data-zone="1"><span class="num">01</span><div><b>Reception PIR</b><br><small>Partition A · Interior</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="2"><span class="num">02</span><div><b>Main door contact</b><br><small>Partition A · Perimeter</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="3"><span class="num">03</span><div><b>Basement PIR</b><br><small>Partition B · Interior</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="4"><span class="num">04</span><div><b>Silent panic</b><br><small>24-hour zone</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="5"><span class="num">05</span><div><b>Vehicle access</b><br><small>Partition B · Perimeter</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="6"><span class="num">06</span><div><b>Restricted area</b><br><small>Partition B · Interior</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="7"><span class="num">07</span><div><b>Panel tamper</b><br><small>24-hour zone</small></div><span class="tag green">NORMAL</span></div>
+      <div class="item" data-zone="8"><span class="num">08</span><div><b>Fire detector</b><br><small>24-hour fire zone</small></div><span class="tag green">NORMAL</span></div>
+    </div>
+  </div>
 </section>
 
 <section>
   <div class="card">
-    <div class="head videoHead"><h2 id="viewTitle">CAM-001 · Reception</h2>
+    <div class="head videoHead">
+      <h2 id="viewTitle">CAM-001 · Reception</h2>
       <select id="cameraSelector" class="cameraSelect" onchange="selectCamera(Number(this.value),true)">
-        <option value="0">CAM-001 · Reception</option><option value="1">CAM-002 · Main entrance</option><option value="2">CAM-003 · Basement</option><option value="3">CAM-004 · Vault panel / Fire</option><option value="4">CAM-005 · LPR access</option><option value="5">CAM-006 · i-PRO test</option>
+        <option value="0">CAM-001 · Reception</option>
+        <option value="1">CAM-002 · Main entrance</option>
+        <option value="2">CAM-003 · Basement</option>
+        <option value="3">CAM-004 · Vault panel / Fire</option>
+        <option value="4">CAM-005 · LPR access</option>
+        <option value="5">CAM-006 · i-PRO camera</option>
       </select>
     </div>
-    <div class="videoWrap"><video id="cameraVideo" autoplay muted playsinline loop controls></video><div class="hud"><span>HQ · SECURITY</span><span id="videoClock">--:--:--</span></div><div id="camName" class="camName">CAM-001 · RECEPTION</div><div id="alarmBorder" class="alarmBorder"></div><div id="alarmBanner" class="banner"><span>CRITICAL EVENT</span><b id="bannerTitle">FIRE ALARM</b><span id="bannerZone">ZONE 08</span></div></div>
-    <div class="tools"><button class="btn" onclick="snapshot()">Snapshot</button><button class="btn" onclick="fullscreenVideo()">Fullscreen</button><button id="muteButton" class="btn" onclick="toggleAudio()">Audio muted</button><span class="tag">1080p · 25 FPS · H.264</span></div>
+    <div class="videoWrap">
+      <video id="cameraVideo" autoplay muted playsinline loop controls></video>
+      <div class="hud"><span>HQ · SECURITY</span><span id="videoClock">--:--:--</span></div>
+      <div id="camName" class="camName">CAM-001 · RECEPTION</div>
+      <div id="alarmBorder" class="alarmBorder"></div>
+      <div id="alarmBanner" class="banner"><span>CRITICAL EVENT</span><b id="bannerTitle">FIRE ALARM</b><span id="bannerZone">ZONE 08</span></div>
+    </div>
+    <div class="tools">
+      <button class="btn" onclick="snapshot()">Snapshot</button>
+      <button class="btn" onclick="fullscreenVideo()">Fullscreen</button>
+      <button id="muteButton" class="btn" onclick="toggleAudio()">Audio muted</button>
+      <span class="tag">1080p · 25 FPS · H.264</span>
+    </div>
   </div>
-  <div class="card"><div class="head"><h2>Cameras</h2><span class="tag">CLICK TO SELECT</span></div><div id="cameraList" class="body list">
-    <div class="item selected" data-camera="0"><span class="num">1</span><div><b>CAM-001 · Reception</b><br><small>Zone 01 · Reception PIR</small></div><span class="tag green">ONLINE</span></div>
-    <div class="item" data-camera="1"><span class="num">2</span><div><b>CAM-002 · Main entrance</b><br><small>Zone 02 · Main door</small></div><span class="tag green">ONLINE</span></div>
-    <div class="item" data-camera="2"><span class="num">3</span><div><b>CAM-003 · Basement</b><br><small>Zone 03 · Basement PIR</small></div><span class="tag green">ONLINE</span></div>
-    <div class="item" data-camera="3"><span class="num">4</span><div><b>CAM-004 · Vault panel</b><br><small>Zone 08 · Fire detector</small></div><span class="tag green">ONLINE</span></div>
-    <div class="item" data-camera="4"><span class="num">5</span><div><b>CAM-005 · LPR access</b><br><small>Zone 05 · Vehicle access</small></div><span class="tag green">ONLINE</span></div>
-    <div class="item" data-camera="5"><span class="num">6</span><div><b>CAM-006 · i-PRO test</b><br><small>Zone 06 · Restricted area</small></div><span class="tag green">ONLINE</span></div>
-  </div></div>
+
+  <div class="card">
+    <div class="head"><h2>Interactive Site Map</h2><span class="tag">SELECT ZONE</span></div>
+    <div class="body">
+      <div id="floorplan" class="floorplan">
+        <div class="room r1" data-room-zone="1"><b>Reception</b><small>Zone 01 · CAM-001</small><span class="sensor"></span></div>
+        <div class="room r2" data-room-zone="2"><b>Main Entrance</b><small>Zone 02 · CAM-002</small><span class="sensor"></span></div>
+        <div class="room r3" data-room-zone="5"><b>Vehicle Access</b><small>Zone 05 · CAM-005</small><span class="sensor"></span></div>
+        <div class="room r4" data-room-zone="3"><b>Basement</b><small>Zone 03 · CAM-003</small><span class="sensor"></span></div>
+        <div class="room r5" data-room-zone="6"><b>Restricted Area</b><small>Zone 06 · CAM-006</small><span class="sensor"></span></div>
+        <div class="room r6" data-room-zone="7"><b>Panel Room</b><small>Zone 07 · Tamper</small><span class="sensor"></span></div>
+        <div class="room r7" data-room-zone="4"><b>Operations Area</b><small>Zone 04 · Silent Panic</small><span class="sensor"></span></div>
+        <div class="room r8" data-room-zone="8"><b>Vault / Fire Area</b><small>Zone 08 · CAM-004</small><span class="sensor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><h2>Cameras</h2><span class="tag">CLICK TO SELECT</span></div>
+    <div id="cameraList" class="body list">
+      <div class="item selected" data-camera="0"><span class="num">1</span><div><b>CAM-001 · Reception</b><br><small>Zone 01 · Reception PIR</small></div><span class="tag green">ONLINE</span></div>
+      <div class="item" data-camera="1"><span class="num">2</span><div><b>CAM-002 · Main entrance</b><br><small>Zone 02 · Main door</small></div><span class="tag green">ONLINE</span></div>
+      <div class="item" data-camera="2"><span class="num">3</span><div><b>CAM-003 · Basement</b><br><small>Zone 03 · Basement PIR</small></div><span class="tag green">ONLINE</span></div>
+      <div class="item" data-camera="3"><span class="num">4</span><div><b>CAM-004 · Vault panel</b><br><small>Zone 08 · Fire detector</small></div><span class="tag green">ONLINE</span></div>
+      <div class="item" data-camera="4"><span class="num">5</span><div><b>CAM-005 · LPR access</b><br><small>Zone 05 · Vehicle access</small></div><span class="tag green">ONLINE</span></div>
+      <div class="item" data-camera="5"><span class="num">6</span><div><b>CAM-006 · i-PRO camera</b><br><small>Zone 06 · Restricted area</small></div><span class="tag green">ONLINE</span></div>
+    </div>
+  </div>
 </section>
 
 <section class="right">
-  <div class="card"><div class="head"><h2>Incident</h2><span id="incidentState" class="tag">NONE</span></div><div class="incident"><div id="incidentEmpty" class="empty">No active incident<br><small>Automatic fire alarm starts after 12 seconds.</small></div><div id="incidentActive" class="activeIncident"><div class="red"><b>CRITICAL · CONTACT ID <span id="cidCode">110</span></b></div><h1 id="incidentTitle">Fire alarm</h1><div id="incidentMeta" class="muted"></div><div class="steps"><div class="step done">✓ Event received from AMT panel</div><div class="step done">✓ Associated camera opened automatically</div><div id="ackStep" class="step">○ Operator acknowledgement pending</div><div id="resetStep" class="step">○ Panel reset pending</div></div><div class="two"><button class="btn primary" onclick="acknowledge()">Acknowledge</button><button class="btn danger" onclick="resetAlarm(true)">Reset alarm</button></div></div></div></div>
-  <div class="card"><div class="head"><h2>Simulation controls</h2></div><div class="body"><label>Camera / zone</label><select id="eventCamera" class="wide" onchange="selectCamera(Number(this.value),true)"><option value="0">CAM-001 · Reception</option><option value="1">CAM-002 · Main entrance</option><option value="2">CAM-003 · Basement</option><option value="3">CAM-004 · Vault panel / Fire</option><option value="4">CAM-005 · LPR access</option><option value="5">CAM-006 · i-PRO test</option></select><label>Event type</label><select id="eventType" class="wide"><option value="fire">Fire alarm · CID 110</option><option value="intrusion">Burglary alarm · CID 130</option><option value="panic">Panic alarm · CID 120</option><option value="tamper">Tamper · CID 144</option><option value="ac">AC power loss · CID 301</option><option value="battery">Low battery · CID 302</option><option value="comm">Communication failure · CID 350</option></select><button class="btn danger wide" style="margin-top:10px" onclick="triggerSelected()">Trigger selected event</button><button class="btn wide" style="margin-top:8px" onclick="resetAlarm(true)">Send restore / reset</button></div></div>
-  <div class="card"><div class="head"><h2>Event log</h2><button class="btn" onclick="clearLog()">Clear</button></div><div id="eventLog" class="body log"></div></div>
+  <div class="card">
+    <div class="head"><h2>Active Incident</h2><span id="incidentState" class="tag">NONE</span></div>
+    <div class="incident">
+      <div id="incidentEmpty" class="empty">Monitoring active<br><small>Waiting for panel events...</small></div>
+      <div id="incidentActive" class="activeIncident">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="red"><b>CRITICAL · CONTACT ID <span id="cidCode">110</span></b></div>
+          <div id="incidentTimer" class="timer">00:00</div>
+        </div>
+        <h1 id="incidentTitle">Fire alarm</h1>
+        <div id="incidentMeta" class="muted"></div>
+        <div class="steps">
+          <div class="step done">✓ Event received from AMT panel</div>
+          <div class="step done">✓ Associated camera opened automatically</div>
+          <div id="ackStep" class="step">○ Operator acknowledgement pending</div>
+          <div id="resetStep" class="step">○ Panel reset pending</div>
+        </div>
+        <div class="two">
+          <button class="btn primary" onclick="acknowledge()">Acknowledge</button>
+          <button class="btn danger" onclick="resetAlarm(true)">Reset alarm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><h2>Operator Actions</h2><span class="tag">CONTROL</span></div>
+    <div class="body">
+      <label>Camera / zone</label>
+      <select id="eventCamera" class="wide" onchange="selectCamera(Number(this.value),true)">
+        <option value="0">CAM-001 · Reception</option>
+        <option value="1">CAM-002 · Main entrance</option>
+        <option value="2">CAM-003 · Basement</option>
+        <option value="3">CAM-004 · Vault panel / Fire</option>
+        <option value="4">CAM-005 · LPR access</option>
+        <option value="5">CAM-006 · i-PRO camera</option>
+      </select>
+      <label>Event type</label>
+      <select id="eventType" class="wide">
+        <option value="fire">Fire alarm · CID 110</option>
+        <option value="intrusion">Burglary alarm · CID 130</option>
+        <option value="panic">Panic alarm · CID 120</option>
+        <option value="tamper">Tamper · CID 144</option>
+        <option value="ac">AC power loss · CID 301</option>
+        <option value="battery">Low battery · CID 302</option>
+        <option value="comm">Communication failure · CID 350</option>
+      </select>
+      <button class="btn danger wide" style="margin-top:10px" onclick="triggerSelected()">Activate event</button>
+      <button class="btn wide" style="margin-top:8px" onclick="resetAlarm(true)">Restore / reset panel</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><h2>Incident Queue</h2><span id="queueCount" class="tag">0 OPEN</span></div>
+    <div id="incidentQueue" class="body queue">
+      <div class="queueItem info"><b>System ready</b><br><small>Panel, zones and cameras online</small></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><h2>Contact ID Event Log</h2><button class="btn" onclick="clearLog()">Clear</button></div>
+    <div id="eventLog" class="body log"></div>
+  </div>
 </section>
 </main>
+
 <div id="toast" class="toast"></div>
+<div id="incidentModal" class="modal">
+  <div class="modalBox">
+    <div class="modalHead"><span>CRITICAL SECURITY EVENT</span><span id="modalTimer">00:00</span></div>
+    <div class="modalBody">
+      <h1 id="modalTitle">Fire alarm</h1>
+      <p id="modalMeta" class="muted"></p>
+      <div class="two">
+        <button class="btn primary" onclick="acknowledge();closeModal()">Acknowledge and open incident</button>
+        <button class="btn" onclick="closeModal()">Continue monitoring</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
 'use strict';
+
 window.cameras=[
 {id:'CAM-001',name:'Reception',file:'cam-reception.mp4',zone:1,zoneName:'Reception PIR'},
 {id:'CAM-002',name:'Main entrance',file:'cam-main-entrance.mp4',zone:2,zoneName:'Main door contact'},
 {id:'CAM-003',name:'Basement',file:'cam-basement.mp4',zone:3,zoneName:'Basement PIR'},
 {id:'CAM-004',name:'Vault panel',file:'cam-vault-panel.mp4',zone:8,zoneName:'Fire detector'},
 {id:'CAM-005',name:'LPR access',file:'cam-lpr.mp4',zone:5,zoneName:'Vehicle access'},
-{id:'CAM-006',name:'i-PRO test',file:'cam-ipro-test.mp4',zone:6,zoneName:'Restricted area'}];
-window.selectedCamera=0; window.currentIncident=null;
-var defs={fire:{title:'Fire alarm',code:'110'},intrusion:{title:'Burglary alarm',code:'130'},panic:{title:'Panic alarm',code:'120'},tamper:{title:'Tamper alarm',code:'144'},ac:{title:'AC power loss',code:'301'},battery:{title:'Low battery',code:'302'},comm:{title:'Communication failure',code:'350'}};
+{id:'CAM-006',name:'i-PRO camera',file:'cam-ipro-test.mp4',zone:6,zoneName:'Restricted area'}
+];
+
+window.selectedCamera=0;
+window.currentIncident=null;
+window.incidentStartedAt=null;
+window.queueOpen=0;
+var partitions={A:true,B:true};
+
+var defs={
+ fire:{title:'Fire alarm',code:'110',priority:'critical'},
+ intrusion:{title:'Burglary alarm',code:'130',priority:'high'},
+ panic:{title:'Panic alarm',code:'120',priority:'critical'},
+ tamper:{title:'Tamper alarm',code:'144',priority:'high'},
+ ac:{title:'AC power loss',code:'301',priority:'high'},
+ battery:{title:'Low battery',code:'302',priority:'high'},
+ comm:{title:'Communication failure',code:'350',priority:'high'}
+};
+
 function el(id){return document.getElementById(id)}
 function time(){return new Date().toLocaleTimeString('en-GB')}
-window.showToast=function(text){var t=el('toast');t.textContent=text;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
-window.addLog=function(text,code){var row=document.createElement('div');row.className='logRow';row.innerHTML='<time>'+time()+'</time><div>'+text+(code?'<br><span class="muted">Contact ID · '+code+'</span>':'')+'</div>';el('eventLog').prepend(row)}
-window.selectCamera=function(index,manual){if(index<0||index>=cameras.length)return;selectedCamera=index;var c=cameras[index],v=el('cameraVideo');el('cameraSelector').value=String(index);el('eventCamera').value=String(index);el('viewTitle').textContent=c.id+' · '+c.name;el('camName').textContent=c.id+' · '+c.name.toUpperCase();document.querySelectorAll('[data-camera]').forEach(function(n){n.classList.toggle('selected',Number(n.getAttribute('data-camera'))===index)});v.src=c.file;v.load();var play=v.play();if(play&&play.catch)play.catch(function(){});if(manual){addLog('Operator selected '+c.id+' · '+c.name);showToast(c.id+' opened')}}
-window.triggerSelected=function(){selectCamera(Number(el('eventCamera').value),false);triggerEvent(el('eventType').value)}
-window.triggerEvent=function(type){if(currentIncident)resetAlarm(false);var d=defs[type]||defs.fire,c=cameras[selectedCamera];currentIncident={type:type,camera:selectedCamera,ack:false};selectCamera(selectedCamera,false);setZoneState(c.zone,'ALARM');el('alarmBorder').classList.add('active');el('alarmBanner').classList.add('show');el('bannerTitle').textContent=d.title.toUpperCase();el('bannerZone').textContent='ZONE '+String(c.zone).padStart(2,'0')+' · '+c.zoneName.toUpperCase();el('siren').classList.add('on');el('incidentEmpty').style.display='none';el('incidentActive').classList.add('show');el('incidentState').textContent='ACTIVE';el('incidentState').className='tag red';el('cidCode').textContent=d.code;el('incidentTitle').textContent=d.title;el('incidentMeta').textContent='Zone '+String(c.zone).padStart(2,'0')+' · '+c.zoneName+' · '+c.id;el('ackStep').textContent='○ Operator acknowledgement pending';el('ackStep').className='step';if(type==='ac'){el('powerState').textContent='FAILED';el('powerState').className='red'}if(type==='battery'){el('batteryState').textContent='10.4 V LOW';el('batteryState').className='red'}if(type==='comm'){el('commState').textContent='FAILED';el('commState').className='red'}addLog(d.title+' · '+c.id+' · zone '+String(c.zone).padStart(2,'0'),d.code);showToast(d.title+' · '+c.id)}
-function setZoneState(zone,state){document.querySelectorAll('[data-zone]').forEach(function(n){if(Number(n.getAttribute('data-zone'))===zone){var tag=n.querySelector('.tag');tag.textContent=state;tag.className='tag '+(state==='ALARM'?'red':state==='BYPASS'?'amber':'green')}})}
-window.acknowledge=function(){if(!currentIncident)return;currentIncident.ack=true;el('ackStep').textContent='✓ Acknowledged by operator';el('ackStep').className='step done';addLog('Incident acknowledged');showToast('Incident acknowledged')}
-window.resetAlarm=function(writeLog){if(!currentIncident){showToast('No active alarm');return}var c=cameras[currentIncident.camera],d=defs[currentIncident.type];setZoneState(c.zone,'NORMAL');el('alarmBorder').classList.remove('active');el('alarmBanner').classList.remove('show');el('siren').classList.remove('on');el('incidentActive').classList.remove('show');el('incidentEmpty').style.display='block';el('incidentState').textContent='NONE';el('incidentState').className='tag';el('powerState').textContent='Normal';el('powerState').className='green';el('batteryState').textContent='13.6 V';el('batteryState').className='green';el('commState').textContent='IP / Contact ID';el('commState').className='green';if(writeLog)addLog(d.title+' restored / panel reset','3'+d.code.substring(1));currentIncident=null;showToast('Panel reset completed')}
-window.toggleBypass=function(){var c=cameras[selectedCamera],item=document.querySelector('[data-zone="'+c.zone+'"]'),tag=item?item.querySelector('.tag'):null;if(!tag)return;var bypass=tag.textContent!=='BYPASS';setZoneState(c.zone,bypass?'BYPASS':'NORMAL');addLog('Zone '+String(c.zone).padStart(2,'0')+(bypass?' bypassed':' restored'),'570');showToast('Zone '+c.zone+' '+(bypass?'BYPASS':'NORMAL'))}
-window.armPartition=function(){el('partitionTag').textContent='PARTITION A ARMED';el('partitionTag').className='tag green';addLog('Partition A armed · Away mode','401')}
-window.disarmPartition=function(){el('partitionTag').textContent='PARTITION A DISARMED';el('partitionTag').className='tag';addLog('Partition A disarmed','401')}
-window.toggleAudio=function(){var v=el('cameraVideo');v.muted=!v.muted;el('muteButton').textContent=v.muted?'Audio muted':'Audio enabled'}
-window.fullscreenVideo=function(){var v=el('cameraVideo');if(v.requestFullscreen)v.requestFullscreen()}
-window.snapshot=function(){var v=el('cameraVideo');if(!v.videoWidth){showToast('Video not ready');return}var c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);var a=document.createElement('a');a.download=cameras[selectedCamera].id+'-'+Date.now()+'.jpg';a.href=c.toDataURL('image/jpeg');a.click()}
-window.clearLog=function(){el('eventLog').innerHTML='';addLog('Event log cleared')}
-document.querySelectorAll('[data-camera]').forEach(function(n){n.addEventListener('click',function(){selectCamera(Number(n.getAttribute('data-camera')),true)})});
-document.querySelectorAll('[data-zone]').forEach(function(n){n.addEventListener('click',function(){var z=Number(n.getAttribute('data-zone')),idx=cameras.findIndex(function(c){return c.zone===z});if(idx>=0)selectCamera(idx,true)})});
-setInterval(function(){el('clock').textContent=time();el('videoClock').textContent=new Date().toLocaleString('en-GB')},1000);
-el('cameraVideo').addEventListener('error',function(){showToast('Video not found: '+cameras[selectedCamera].file)});
-selectCamera(0,false);addLog('System initialized · panel and six cameras online');addLog('Automatic fire simulation scheduled · 12 seconds');
-setTimeout(function(){if(!currentIncident){selectCamera(3,false);triggerEvent('fire')}},12000);
+function pad(n){return String(n).padStart(2,'0')}
+function elapsed(){
+  if(!incidentStartedAt)return '00:00';
+  var s=Math.floor((Date.now()-incidentStartedAt)/1000);
+  return pad(Math.floor(s/60))+':'+pad(s%60);
+}
+
+window.showToast=function(text){
+  var t=el('toast');t.textContent=text;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},1800)
+};
+
+window.addLog=function(text,code){
+  var row=document.createElement('div');
+  row.className='logRow';
+  row.innerHTML='<time>'+time()+'</time><div>'+text+(code?'<br><span class="muted">Contact ID · '+code+'</span>':'')+'</div>';
+  el('eventLog').prepend(row)
+};
+
+function updateQueueCount(){
+  el('queueCount').textContent=queueOpen+' OPEN'
+}
+
+function addQueue(title,meta,priority){
+  queueOpen++;
+  updateQueueCount();
+  var q=document.createElement('div');
+  q.className='queueItem '+(priority||'info');
+  q.innerHTML='<b>'+title+'</b><br><small>'+meta+'</small>';
+  el('incidentQueue').prepend(q)
+}
+
+window.selectCamera=function(index,manual){
+  if(index<0||index>=cameras.length)return;
+  selectedCamera=index;
+  var c=cameras[index],v=el('cameraVideo');
+  el('cameraSelector').value=String(index);
+  el('eventCamera').value=String(index);
+  el('viewTitle').textContent=c.id+' · '+c.name;
+  el('camName').textContent=c.id+' · '+c.name.toUpperCase();
+  document.querySelectorAll('[data-camera]').forEach(function(n){
+    n.classList.toggle('selected',Number(n.getAttribute('data-camera'))===index)
+  });
+  document.querySelectorAll('[data-room-zone]').forEach(function(n){
+    n.classList.toggle('selected',Number(n.getAttribute('data-room-zone'))===c.zone)
+  });
+  v.src=c.file;v.load();
+  var play=v.play();if(play&&play.catch)play.catch(function(){});
+  if(manual){addLog('Operator selected '+c.id+' · '+c.name);showToast(c.id+' opened')}
+};
+
+window.triggerSelected=function(){
+  selectCamera(Number(el('eventCamera').value),false);
+  triggerEvent(el('eventType').value)
+};
+
+window.triggerEvent=function(type){
+  if(currentIncident)resetAlarm(false);
+  var d=defs[type]||defs.fire,c=cameras[selectedCamera];
+  currentIncident={type:type,camera:selectedCamera,ack:false};
+  incidentStartedAt=Date.now();
+  selectCamera(selectedCamera,false);
+  setZoneState(c.zone,'ALARM');
+  setRoomAlarm(c.zone,true);
+  el('alarmBorder').classList.add('active');
+  el('alarmBanner').classList.add('show');
+  el('bannerTitle').textContent=d.title.toUpperCase();
+  el('bannerZone').textContent='ZONE '+pad(c.zone)+' · '+c.zoneName.toUpperCase();
+  el('siren').classList.add('on');
+  el('sirenLed').className='led alert';
+  el('strobeLed').className='led alert';
+  el('pgmLed').className='led alert';
+  el('panelState').textContent='ALARM';
+  el('panelState').className='red';
+  el('incidentEmpty').style.display='none';
+  el('incidentActive').classList.add('show');
+  el('incidentState').textContent='ACTIVE';
+  el('incidentState').className='tag red';
+  el('cidCode').textContent=d.code;
+  el('incidentTitle').textContent=d.title;
+  el('incidentMeta').textContent='Zone '+pad(c.zone)+' · '+c.zoneName+' · '+c.id;
+  el('ackStep').textContent='○ Operator acknowledgement pending';
+  el('ackStep').className='step';
+  el('resetStep').textContent='○ Panel reset pending';
+  el('resetStep').className='step';
+
+  if(type==='ac'){el('powerState').textContent='FAILED';el('powerState').className='red'}
+  if(type==='battery'){el('batteryState').textContent='10.4 V LOW';el('batteryState').className='red'}
+  if(type==='comm'){el('commState').textContent='FAILED';el('commState').className='red'}
+
+  addLog(d.title+' · '+c.id+' · zone '+pad(c.zone),d.code);
+  addQueue(d.title,c.id+' · Zone '+pad(c.zone)+' · '+c.zoneName,d.priority);
+  showToast(d.title+' · '+c.id);
+
+  el('modalTitle').textContent=d.title;
+  el('modalMeta').textContent=c.id+' · Zone '+pad(c.zone)+' · '+c.zoneName;
+  el('incidentModal').classList.add('show')
+};
+
+function setZoneState(zone,state){
+  document.querySelectorAll('[data-zone]').forEach(function(n){
+    if(Number(n.getAttribute('data-zone'))===zone){
+      var tag=n.querySelector('.tag');
+      tag.textContent=state;
+      tag.className='tag '+(state==='ALARM'?'red':state==='BYPASS'?'amber':'green')
+    }
+  })
+}
+
+function setRoomAlarm(zone,on){
+  document.querySelectorAll('[data-room-zone]').forEach(function(n){
+    if(Number(n.getAttribute('data-room-zone'))===zone)n.classList.toggle('alarm',on)
+  })
+}
+
+window.acknowledge=function(){
+  if(!currentIncident)return;
+  currentIncident.ack=true;
+  el('ackStep').textContent='✓ Acknowledged by operator';
+  el('ackStep').className='step done';
+  addLog('Incident acknowledged');
+  showToast('Incident acknowledged')
+};
+
+window.resetAlarm=function(writeLog){
+  if(!currentIncident){showToast('No active alarm');return}
+  var c=cameras[currentIncident.camera],d=defs[currentIncident.type];
+  setZoneState(c.zone,'NORMAL');
+  setRoomAlarm(c.zone,false);
+  el('alarmBorder').classList.remove('active');
+  el('alarmBanner').classList.remove('show');
+  el('siren').classList.remove('on');
+  el('sirenLed').className='led';
+  el('strobeLed').className='led';
+  el('pgmLed').className='led';
+  el('incidentActive').classList.remove('show');
+  el('incidentEmpty').style.display='block';
+  el('incidentState').textContent='NONE';
+  el('incidentState').className='tag';
+  el('panelState').textContent='Ready';
+  el('panelState').className='green';
+  el('powerState').textContent='Normal';
+  el('powerState').className='green';
+  el('batteryState').textContent='13.6 V';
+  el('batteryState').className='green';
+  el('commState').textContent='IP / Contact ID';
+  el('commState').className='green';
+  el('resetStep').textContent='✓ Panel reset completed';
+  el('resetStep').className='step done';
+  closeModal();
+  if(writeLog)addLog(d.title+' restored / panel reset','3'+d.code.substring(1));
+  currentIncident=null;
+  incidentStartedAt=null;
+  if(queueOpen>0)queueOpen--;
+  updateQueueCount();
+  showToast('Panel reset completed')
+};
+
+window.toggleBypass=function(){
+  var c=cameras[selectedCamera],item=document.querySelector('[data-zone="'+c.zone+'"]'),tag=item?item.querySelector('.tag'):null;
+  if(!tag)return;
+  var bypass=tag.textContent!=='BYPASS';
+  setZoneState(c.zone,bypass?'BYPASS':'NORMAL');
+  addLog('Zone '+pad(c.zone)+(bypass?' bypassed':' restored'),'570');
+  showToast('Zone '+c.zone+' '+(bypass?'BYPASS':'NORMAL'))
+};
+
+window.setPartition=function(partition,armed){
+  partitions[partition]=armed;
+  el('partitionTag').textContent='PARTITION '+partition+' '+(armed?'ARMED':'DISARMED');
+  el('partitionTag').className='tag '+(armed?'green':'');
+  addLog('Partition '+partition+' '+(armed?'armed':'disarmed'),'401');
+  showToast('Partition '+partition+' '+(armed?'armed':'disarmed'))
+};
+
+window.toggleAudio=function(){
+  var v=el('cameraVideo');v.muted=!v.muted;
+  el('muteButton').textContent=v.muted?'Audio muted':'Audio enabled'
+};
+
+window.fullscreenVideo=function(){
+  var v=el('cameraVideo');if(v.requestFullscreen)v.requestFullscreen()
+};
+
+window.snapshot=function(){
+  var v=el('cameraVideo');
+  if(!v.videoWidth){showToast('Video not ready');return}
+  var c=document.createElement('canvas');
+  c.width=v.videoWidth;c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0);
+  var a=document.createElement('a');
+  a.download=cameras[selectedCamera].id+'-'+Date.now()+'.jpg';
+  a.href=c.toDataURL('image/jpeg');a.click()
+};
+
+window.clearLog=function(){
+  el('eventLog').innerHTML='';
+  addLog('Event log cleared')
+};
+
+window.closeModal=function(){el('incidentModal').classList.remove('show')};
+
+document.querySelectorAll('[data-camera]').forEach(function(n){
+  n.addEventListener('click',function(){selectCamera(Number(n.getAttribute('data-camera')),true)})
+});
+
+document.querySelectorAll('[data-zone]').forEach(function(n){
+  n.addEventListener('click',function(){
+    var z=Number(n.getAttribute('data-zone'));
+    var idx=cameras.findIndex(function(c){return c.zone===z});
+    if(idx>=0)selectCamera(idx,true)
+  })
+});
+
+document.querySelectorAll('[data-room-zone]').forEach(function(n){
+  n.addEventListener('click',function(){
+    var z=Number(n.getAttribute('data-room-zone'));
+    var idx=cameras.findIndex(function(c){return c.zone===z});
+    if(idx>=0)selectCamera(idx,true);
+    else showToast('Zone '+pad(z)+' selected')
+  })
+});
+
+setInterval(function(){
+  el('clock').textContent=time();
+  el('videoClock').textContent=new Date().toLocaleString('en-GB');
+  var e=elapsed();
+  el('incidentTimer').textContent=e;
+  el('modalTimer').textContent=e
+},1000);
+
+el('cameraVideo').addEventListener('error',function(){
+  showToast('Video not found: '+cameras[selectedCamera].file)
+});
+
+selectCamera(0,false);
+addLog('System initialized · panel and six cameras online');
+addLog('Monitoring link established · Contact ID ready');
+
+var automaticDelay=18000+Math.floor(Math.random()*9000);
+setTimeout(function(){
+  if(!currentIncident){
+    selectCamera(3,false);
+    triggerEvent('fire')
+  }
+},automaticDelay);
+
 })();
 </script>
-</body></html>
+</body>
+</html>
